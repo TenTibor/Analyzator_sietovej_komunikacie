@@ -1,7 +1,7 @@
 from scapy.all import *
 
 # load one vzorku
-data = rdpcap('vzorky/trace-20.pcap')
+data = rdpcap('vzorky/trace-2.pcap')
 
 for index, packet in enumerate(data):
     rawPacket = raw(packet)
@@ -45,7 +45,7 @@ for index, packet in enumerate(data):
             packetType = "IEEE 802.3 - LLC"
 
     # print all data
-    print(f"Rámec: {index}")
+    print(f"Rámec: {index+1}")
     print(f"Dĺžka rámca poskytnutá pcap API - {lengthPacket} B")
     print(f"Dĺžka rámca prenášaného po médiu - {mediumLength} B")
     print(f"Typ: {packetType}")
@@ -57,8 +57,8 @@ for index, packet in enumerate(data):
         print(char, end="")
         if index % 2:
             print(" ", end="")
-        if index % 15 == 0 and index != 0:
+        if index % 16 == 15:
             print(" ", end="")
-        if index % 30 == 0 and index != 0:
+        if index % 32 == 31:
             print("")
     print("\n")
