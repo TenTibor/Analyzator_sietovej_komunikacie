@@ -60,9 +60,14 @@ for index, packet in enumerate(data):
                 sourceIpAddress += ":"
             i += 2
 
-        # Add source address to array
-        allEthernetNodes.append(sourceIpAddress)
-
+        # Add source address to array if not exist. If yes.. Increase number of usage
+        found = False
+        for node in allEthernetNodes:
+            if node[0] == sourceIpAddress:
+                node[1] += 1
+                found = True
+        if not found:
+            allEthernetNodes.append([sourceIpAddress, 1])
 
         # Calculate destination IP address
         destinationIpAddressHex = hexPacket[endOfHead + 8:endOfHead + 16]
@@ -119,5 +124,15 @@ for index, packet in enumerate(data):
     print("\n")
 
 # Print all ethernet source address
+print("===============================================")
+print("Zoznam IP adries všetkých odosielajúcich uzlov:")
 for node in allEthernetNodes:
-    print(node)
+    print(node[0])
+
+# find most used and print it
+mostUsed = [None, 0]
+for node in allEthernetNodes:
+    if node[1] > mostUsed[1]:
+        mostUsed = node
+
+print(f"Najviac bola pou69van8 adresa {mostUsed[0]} so {mostUsed[1]} paketmi")
