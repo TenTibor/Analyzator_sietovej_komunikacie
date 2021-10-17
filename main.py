@@ -3,11 +3,13 @@ from ast import literal_eval
 from scapy.all import *
 
 # load files and create db
-data = rdpcap('vzorky/eth-9.pcap')
+data = rdpcap('vzorky/eth-2.pcap')
 file = open('db.txt', "r")
 protocols = []
 for iProtocol in file:
     protocols.append(iProtocol.split(" "))
+
+allEthernetNodes = []
 
 for index, packet in enumerate(data):
     rawPacket = raw(packet)
@@ -47,7 +49,7 @@ for index, packet in enumerate(data):
                 protocol = xProtocol[1].replace("\n", "")
         lengthHead = int(hexPacket[29]) * 4  # why tf 4?
 
-        # Calculate source IP adress
+        # Calculate source IP address
         endOfHead = 32 + lengthHead
         sourceIpAddressHex = hexPacket[endOfHead:endOfHead + 8]
         sourceIpAddress = ""
@@ -58,7 +60,11 @@ for index, packet in enumerate(data):
                 sourceIpAddress += ":"
             i += 2
 
-        # Calculate destination IP adress
+        # Add source address to array
+        allEthernetNodes.append(sourceIpAddress)
+
+
+        # Calculate destination IP address
         destinationIpAddressHex = hexPacket[endOfHead + 8:endOfHead + 16]
         destinationIpAddress = ""
         i = 0
@@ -111,3 +117,7 @@ for index, packet in enumerate(data):
         if index % 32 == 31:
             print("")
     print("\n")
+
+# Print all ethernet source address
+for node in allEthernetNodes:
+    print(node)
