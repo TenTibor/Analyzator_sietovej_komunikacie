@@ -3,7 +3,7 @@ from ast import literal_eval
 from scapy.all import *
 
 # load files and create db
-data = rdpcap('vzorky/eth-2.pcap')
+data = rdpcap('vzorky/trace-8.pcap')
 file = open('db.txt', "r")
 protocols = []
 for iProtocol in file:
@@ -47,7 +47,7 @@ for index, packet in enumerate(data):
         for xProtocol in protocols:
             if xProtocol[0] == protocol:
                 protocol = xProtocol[1].replace("\n", "")
-        lengthHead = int(hexPacket[29]) * 4  # why tf 4?
+        lengthHead = int(hexPacket[29]) * 4
 
         # Calculate source IP address
         endOfHead = 32 + lengthHead
@@ -79,7 +79,7 @@ for index, packet in enumerate(data):
                 destinationIpAddress += ":"
             i += 2
 
-        # get protocol
+        # get UDP, TCP, ..
         ipvProtocol = hexPacket[46:48]
         for xProtocol in protocols:
             if xProtocol[0] == ipvProtocol or xProtocol[1] == ipvProtocol:
@@ -109,7 +109,16 @@ for index, packet in enumerate(data):
     # print ports
     print(ipvProtocol)
     if ipvProtocol == "TCP" or ipvProtocol == "UDP":
-        print("Source port: " + str(int(hexPacket[endOfHead + 16:endOfHead + 20], 16)))
+        sourcePort = int(hexPacket[endOfHead + 16:endOfHead + 20], 16)
+
+        # print protocol by source port
+        for xProtocol in protocols[9:]:
+            # print(xProtocol[1], sourcePort)
+            if int(xProtocol[1]) == sourcePort:
+                print(xProtocol[2].replace("\n", ""))
+
+        # print source and destination port
+        print("Source port: " + str(sourcePort))
         print("Destination port: " + str(int(hexPacket[endOfHead + 20:endOfHead + 24], 16)))
 
     # print hex packet
