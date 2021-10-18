@@ -1,9 +1,7 @@
-from ast import literal_eval
-
 from scapy.all import *
 
 # load files and create db
-data = rdpcap('vzorky/trace-8.pcap')
+data = rdpcap('vzorky/trace-20.pcap')
 file = open('db.txt', "r")
 protocols = []
 for iProtocol in file:
@@ -12,6 +10,9 @@ for iProtocol in file:
 allEthernetNodes = []
 
 for index, packet in enumerate(data):
+    sourceIpAddress = None
+    ipvProtocol = None
+
     rawPacket = raw(packet)
     hexPacket = rawPacket.hex()
 
@@ -81,7 +82,7 @@ for index, packet in enumerate(data):
 
         # get UDP, TCP, ..
         ipvProtocol = hexPacket[46:48]
-        for xProtocol in protocols:
+        for xProtocol in protocols[7:]:
             if xProtocol[0] == ipvProtocol or xProtocol[1] == ipvProtocol:
                 ipvProtocol = xProtocol[2].replace("\n", "")
 
@@ -89,11 +90,20 @@ for index, packet in enumerate(data):
         # If it is not ethernet II, get another B to check
         packetHexForType = hexPacket[28:30]
         if packetHexForType == "aa":
-            packetType = "IEEE 802.3 - Snap"
+            packetType = "IEEE 802.3 - "
         elif packetHexForType == "ff":
-            packetType = "IEEE 802.3 - Raw"
+            packetType = "IEEE 802.3 - "
         else:
-            packetType = "IEEE 802.3 - LLC"
+            packetType = "IEEE 802.3 - "
+
+        foundProtocol = False
+        for xProtocol in protocols[3:]:
+            # print(xProtocol[1], sourcePort)
+            if xProtocol[0] == packetHexForType:
+                packetType += xProtocol[1].replace("\n", "")
+                foundProtocol = True
+        if not foundProtocol:
+            packetType += "LLC"
 
     # print all data
     print(f"Rámec: {index + 1}")
@@ -101,25 +111,27 @@ for index, packet in enumerate(data):
     print(f"Dĺžka rámca prenášaného po médiu - {mediumLength} B")
     print(f"Typ: {packetType}")
     print(f"Protocol: {protocol}")
-    print(f"Zdrojová IP adresa: {sourceIpAddress}")
-    print(f"Cieľová IP adresa: {destinationIpAddress}")
+    if sourceIpAddress:
+        print(f"Zdrojová IP adresa: {sourceIpAddress}")
+        print(f"Cieľová IP adresa: {destinationIpAddress}")
     print(f"Zdrojová MAC adresa: {sourceMacAddress}")
     print(f"Cieľová MAC adresa: {destinationMacAddress}")
 
     # print ports
-    print(ipvProtocol)
-    if ipvProtocol == "TCP" or ipvProtocol == "UDP":
-        sourcePort = int(hexPacket[endOfHead + 16:endOfHead + 20], 16)
+    if ipvProtocol:
+        print(ipvProtocol)
+        if ipvProtocol == "TCP" or ipvProtocol == "UDP":
+            sourcePort = int(hexPacket[endOfHead + 16:endOfHead + 20], 16)
 
-        # print protocol by source port
-        for xProtocol in protocols[9:]:
-            # print(xProtocol[1], sourcePort)
-            if int(xProtocol[1]) == sourcePort:
-                print(xProtocol[2].replace("\n", ""))
+            # print protocol by source port
+            for xProtocol in protocols[9:]:
+                # print(xProtocol[1], sourcePort)
+                if int(xProtocol[1]) == sourcePort:
+                    print(xProtocol[2].replace("\n", ""))
 
-        # print source and destination port
-        print("Source port: " + str(sourcePort))
-        print("Destination port: " + str(int(hexPacket[endOfHead + 20:endOfHead + 24], 16)))
+            # print source and destination port
+            print("Source port: " + str(sourcePort))
+            print("Destination port: " + str(int(hexPacket[endOfHead + 20:endOfHead + 24], 16)))
 
     # print hex packet
     for index, char in enumerate(hexPacket):
@@ -144,4 +156,4 @@ for node in allEthernetNodes:
     if node[1] > mostUsed[1]:
         mostUsed = node
 
-print(f"Najviac bola pou69van8 adresa {mostUsed[0]} so {mostUsed[1]} paketmi")
+print(f"Najviac bola pou69van8 adresa {mostUsed[0]} s {mostUsed[1]} paketmi")

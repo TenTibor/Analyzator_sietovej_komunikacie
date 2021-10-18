@@ -3,6 +3,7 @@
 86dd IPv6
 42 STP
 aa SNAP
+ff RAW
 e0 IPX
 01 1 ICMP
 06 6 TCP
