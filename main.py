@@ -89,21 +89,13 @@ for index, packet in enumerate(data):
     else:
         # If it is not ethernet II, get another B to check
         packetHexForType = hexPacket[28:30]
-        if packetHexForType == "aa":
-            packetType = "IEEE 802.3 - "
-        elif packetHexForType == "ff":
-            packetType = "IEEE 802.3 - "
-        else:
-            packetType = "IEEE 802.3 - "
+        packetType = "IEEE 802.3"
 
-        foundProtocol = False
+        protocol = "LLC"
         for xProtocol in protocols[3:]:
             # print(xProtocol[1], sourcePort)
             if xProtocol[0] == packetHexForType:
-                packetType += xProtocol[1].replace("\n", "")
-                foundProtocol = True
-        if not foundProtocol:
-            packetType += "LLC"
+                protocol = xProtocol[1].replace("\n", "")
 
     # print all data
     print(f"Rámec: {index + 1}")
