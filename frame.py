@@ -105,24 +105,13 @@ class Frame:
         lengthHead = int(self.hexPacket[29]) * 4
 
         if self.protocol == "IPv4":
-            # Calculate source IP address
             self.endOfHead = 32 + lengthHead
-            sourceIpAddressHex = self.hexPacket[self.endOfHead:self.endOfHead + 8]
-            i = 0
-            while i < len(sourceIpAddressHex):
-                self.sourceIpAddress += str(int(sourceIpAddressHex[i] + sourceIpAddressHex[i + 1], 16))
-                if i + 2 != len(sourceIpAddressHex):
-                    self.sourceIpAddress += ":"
-                i += 2
+
+            # Calculate source IP address
+            self.sourceIpAddress = self.calc_ip_address(self.endOfHead)
 
             # Calculate destination IP address
-            destinationIpAddressHex = self.hexPacket[self.endOfHead + 8:self.endOfHead + 16]
-            i = 0
-            while i < len(destinationIpAddressHex):
-                self.destinationIpAddress += str(int(destinationIpAddressHex[i] + destinationIpAddressHex[i + 1], 16))
-                if i + 2 != len(destinationIpAddressHex):
-                    self.destinationIpAddress += ":"
-                i += 2
+            self.destinationIpAddress = self.calc_ip_address(self.endOfHead + 8)
 
             # get UDP, TCP, ..
             self.ipvProtocol = self.hexPacket[46:48]
@@ -157,3 +146,16 @@ class Frame:
             self.calc_ethernet()
         else:
             self.calc_ieee()
+
+    def calc_ip_address(self, start_pointer):
+        ip_address_hex = self.hexPacket[start_pointer:start_pointer + 8]
+        ip_address = ""
+
+        i = 0
+        while i < len(ip_address_hex):
+            ip_address += str(int(ip_address_hex[i] + ip_address_hex[i + 1], 16))
+            if i + 2 != len(ip_address_hex):
+                ip_address += ":"
+            i += 2
+
+        return ip_address
