@@ -10,6 +10,18 @@ for iProtocol in file:
     protocols.append(iProtocol.split(" "))
 
 
+def print_hex(hexPacket):
+    print("")
+    for index, char in enumerate(hexPacket):
+        print(char, end="")
+        if index % 2:
+            print(" ", end="")
+        if index % 16 == 15:
+            print(" ", end="")
+        if index % 32 == 31:
+            print("")
+
+
 def print_frame(index, packet):
     sourceIpAddress = None
     ipvProtocol = None
@@ -118,18 +130,14 @@ def print_frame(index, packet):
             print(" -Destination port: " + str(int(hexPacket[endOfHead + 20:endOfHead + 24], 16)))
 
     # print hex packet
-    print("")
-    for index, char in enumerate(hexPacket):
-        print(char, end="")
-        if index % 2:
-            print(" ", end="")
-        if index % 16 == 15:
-            print(" ", end="")
-        if index % 32 == 31:
-            print("")
+    print_hex(hexPacket)
     print("\n------------------------------------------------")
 
     return sourceIpAddress
+
+
+def tftp_communications():
+    pass
 
 
 def all_frames():
@@ -147,7 +155,7 @@ def all_frames():
             allEthernetNodes.append([sourceIpAddress, 1])
 
     # Print all ethernet source address
-    print("Zoznam IP adries všetkých odosielajúcich uzlov:")
+    print("=== List of all used IP address ===")
     for node in allEthernetNodes:
         print(node[0])
 
@@ -157,15 +165,18 @@ def all_frames():
         if node[1] > mostUsed[1]:
             mostUsed = node
 
-    print(f"Najviac bola pouzivana adresa {mostUsed[0]} s {mostUsed[1]} paketmy")
+    print(f"Most used address {mostUsed[0]} with {mostUsed[1]} pakets")
 
 
 # INTERFACE
 print("Choose your action:")
 print("1 - Get all frames")
+print("2 - All TFTP communications")
 print("> ", end="")
-userResponse = input()
-# userResponse = "1"
+# userResponse = input()
+userResponse = "1"
 print(userResponse)
 if userResponse == "1":
     all_frames()
+elif userResponse == "2":
+    tftp_communications()
