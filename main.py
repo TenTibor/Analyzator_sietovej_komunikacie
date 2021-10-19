@@ -3,9 +3,10 @@ from scapy.all import *
 from frame import Frame
 
 # load files and create db
+file = "eth-1.pcap"  # http
 # file = "eth-2.pcap"  # ethernet
 # file = "trace-15.pcap"  # ARP
-file = "trace-26.pcap"  # ARP
+# file = "trace-26.pcap"  # ARP
 
 data = rdpcap('vzorky/' + file)
 print(f"[File '{file}' was loaded]\n")
@@ -131,6 +132,12 @@ def print_everything():
         frame.print_frame()
 
 
+def print_by_protocol(protocol):
+    for frame in all_frames:
+        if frame.protocol_by_port and frame.protocol_by_port.lower() == protocol.lower():
+            frame.print_frame()
+
+
 def print_icmp():
     print("=== List of all ICMP protocols ===")
     for frame in communications_icmp:
@@ -156,29 +163,39 @@ def most_used_ip_addresses():
 calc_all_frames()
 
 # INTERFACE
-print_icmp()
+# print_icmp()
 # print_everything()
 # arp_communications()
 # tftp_communications()
+# print_html()
 # most_used_ip_addresses()
 
-# userResponse = ""
-# while userResponse != "q":
-#     print("Actions list:")
-#     print("2 - Most used IP address")
-#     print("3 - All TFTP communications")
-#     print("4 - All ARP communications")
-#     print("5 - All ICMP communications")
-#     print("q - Quit application")
-#     print("----------------------------")
-#     print("Type action > ", end="")
-#     userResponse = input()
-#     # userResponse = "1"
-#     elif userResponse == "2":
-#         most_used_ip_addresses()
-#     elif userResponse == "3":
-#         tftp_communications()
-#     elif userResponse == "4":
-#         arp_communications()
-#     elif userResponse == "5":
-#         print_icmp()
+userResponse = ""
+while userResponse != "q":
+    print("Actions list:")
+    print("1 - Everything")
+    print("2 - Most used IP address")
+    print("3 - All TFTP communications")
+    print("4 - All ARP communications")
+    print("5 - All ICMP communications")
+    print("6 - Filter by protocol")
+    print("q - Quit application")
+    print("----------------------------")
+    print("Type action > ", end="")
+    userResponse = input()
+
+    # userResponse = "1"
+    if userResponse == "1":
+        print_everything()
+    elif userResponse == "2":
+        most_used_ip_addresses()
+    elif userResponse == "3":
+        tftp_communications()
+    elif userResponse == "4":
+        arp_communications()
+    elif userResponse == "5":
+        print_icmp()
+    elif userResponse == "6":
+        print("Type protocol > ", end="")
+        protocol = input()
+        print_by_protocol(protocol)

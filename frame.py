@@ -99,12 +99,12 @@ class Frame:
 
             # print ports
             if self.protocol_by_port:
-                print(self.protocol_by_port, end="")
+                print("  -" + self.protocol_by_port)
 
             # print source and destination port
             if self.sourcePort:
-                print("  -Source port: " + str(self.sourcePort))
-                print("  -Destination port: " + str(self.destinationPort))
+                print("   -Source port: " + str(self.sourcePort))
+                print("   -Destination port: " + str(self.destinationPort))
 
         if self.protocol == "ARP":
             print("  -Opcode: " + ("Request" if self.op_code == 1 else "Reply"))
@@ -146,7 +146,7 @@ class Frame:
                         for yProtocol in self.db_protocols[12:]:
                             # print(xProtocol[1], sourcePort)
                             if int(yProtocol[1]) == self.destinationPort:
-                                self.protocol_by_port = yProtocol[2]
+                                self.protocol_by_port = yProtocol[2].replace("\n", "")
 
             # calc ICMP protocol
             if self.ipvProtocol == "ICMP":
