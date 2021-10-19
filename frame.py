@@ -66,7 +66,7 @@ class Frame:
                 self.sourceMacAddress += ":"
 
     def print_frame(self):
-        print(f"Rámec: {self.index}")
+        print(f"Frame: {self.index}")
         print(f"PCAP API packet length: {self.lengthPacket}B")
         print(f"Real packet length: {self.mediumLength}B")
         print(self.packetType)
@@ -81,19 +81,19 @@ class Frame:
         if self.ipvProtocol:
             if self.ipvProtocol == "TCP" or self.ipvProtocol == "UDP":
                 print(self.ipvProtocol)
-                sourcePort = int(self.hexPacket[self.endOfHead + 16:self.endOfHead + 20], 16)
+                self.sourcePort = int(self.hexPacket[self.endOfHead + 16:self.endOfHead + 20], 16)
 
                 # print protocol by source port
                 for xProtocol in self.db_protocols[9:]:
                     # print(xProtocol[1], sourcePort)
-                    if int(xProtocol[1]) == sourcePort:
+                    if int(xProtocol[1]) == self.sourcePort:
                         print("- " + xProtocol[2].replace("\n", ""))
 
                 # print source and destination port
                 print(" -Source port: " + str(self.sourcePort))
                 print(" -Destination port: " + str(int(self.hexPacket[self.endOfHead + 20:self.endOfHead + 24], 16)))
 
-        self.print_hex()
+        # self.print_hex()
         print("\n------------------------------------------------")
 
     def calc_ethernet(self):
