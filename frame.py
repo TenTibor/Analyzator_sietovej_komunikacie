@@ -18,6 +18,7 @@ class Frame:
     packetType = None
     protocol = None
     ipvProtocol = None
+    protocol_by_port = None
 
     sourcePort = None
     destinationPort = None
@@ -69,29 +70,23 @@ class Frame:
         print(f"Frame: {self.index}")
         print(f"PCAP API packet length: {self.lengthPacket}B")
         print(f"Real packet length: {self.mediumLength}B")
+        print(f"Zdrojová MAC adresa: {self.sourceMacAddress}")
+        print(f"Cieľová MAC adresa: {self.destinationMacAddress}")
         print(self.packetType)
         print(f" -{self.protocol}")
-        if self.sourceIpAddress:
+        if self.ipvProtocol:
+            print(" -" + self.ipvProtocol)
             print(f" -Zdrojová IP adresa: {self.sourceIpAddress}")
             print(f" -Cieľová IP adresa: {self.destinationIpAddress}")
-        print(f" -Zdrojová MAC adresa: {self.sourceMacAddress}")
-        print(f" -Cieľová MAC adresa: {self.destinationMacAddress}")
 
-        # print ports
-        if self.ipvProtocol:
-            if self.ipvProtocol == "TCP" or self.ipvProtocol == "UDP":
-                print(self.ipvProtocol)
-                self.sourcePort = int(self.hexPacket[self.endOfHead + 16:self.endOfHead + 20], 16)
+            # print ports
+            if self.protocol_by_port:
+                print(self.protocol_by_port)
 
-                # print protocol by source port
-                for xProtocol in self.db_protocols[11:]:
-                    # print(xProtocol[1], sourcePort)
-                    if int(xProtocol[1]) == self.sourcePort:
-                        print("- " + xProtocol[2].replace("\n", ""))
-
-                # print source and destination port
+            # print source and destination port
+            if self.sourcePort:
                 print(" -Source port: " + str(self.sourcePort))
-                print(" -Destination port: " + str(int(self.hexPacket[self.endOfHead + 20:self.endOfHead + 24], 16)))
+                print(" -Destination port: " + str(self.destinationPort))
 
         # self.print_hex()
         print("\n------------------------------------------------")
@@ -99,15 +94,14 @@ class Frame:
     def calc_ethernet(self):
         self.packetType = "Ethernet II"
         self.protocol = self.hexPacket[24:28]
-        print(self.protocol)
 
         for xProtocol in self.db_protocols:
             if xProtocol[0] == self.protocol:
                 self.protocol = xProtocol[1].replace("\n", "")
-        lengthHead = int(self.hexPacket[28:29]) * 4
+        # lengthHead = int(self.hexPacket[28:29]) * 4
 
         if self.protocol == "IPv4":
-            self.endOfHead = 32 + lengthHead
+            self.endOfHead = 52
 
             # Calculate source IP address
             self.sourceIpAddress = self.calc_ip_address_from_hex(self.endOfHead)
@@ -120,6 +114,17 @@ class Frame:
             for xProtocol in self.db_protocols[8:]:
                 if xProtocol[0] == self.ipvProtocol or xProtocol[1] == self.ipvProtocol:
                     self.ipvProtocol = xProtocol[2].replace("\n", "")
+
+                    # set protocols if TCP or UDP
+                    if self.ipvProtocol == "TCP" or self.ipvProtocol == "UDP":
+                        self.sourcePort = int(self.hexPacket[self.endOfHead + 16:self.endOfHead + 20], 16)
+                        self.destinationPort = int(self.hexPacket[self.endOfHead + 20:self.endOfHead + 24], 16)
+
+                        # print protocol by destination port
+                        for yProtocol in self.db_protocols[11:]:
+                            # print(xProtocol[1], sourcePort)
+                            if int(yProtocol[1]) == self.destinationPort:
+                                self.protocol_by_port = yProtocol[2]
 
         if self.protocol == "ARP":
             # Calculate source IP address
