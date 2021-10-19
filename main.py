@@ -17,6 +17,14 @@ def tftp_communications():
 
 
 def all_frames():
+    for index, packet in enumerate(data):
+        # get frame
+        this_frame = Frame(packet, index + 1, protocols)
+        # print frame
+        this_frame.print_frame()
+
+
+def most_used_ip_addresses():
     allEthernetNodes = []
     for index, packet in enumerate(data):
 
@@ -55,12 +63,15 @@ def all_frames():
 # INTERFACE
 print("Choose your action:")
 print("1 - Get all frames")
-print("2 - All TFTP communications")
+print("2 - Most used IP address")
+print("3 - All TFTP communications")
 print("> ", end="")
-# userResponse = input()
-userResponse = "1"
+userResponse = input()
+# userResponse = "1"
 print(userResponse)
 if userResponse == "1":
     all_frames()
 elif userResponse == "2":
+    most_used_ip_addresses()
+elif userResponse == "3":
     tftp_communications()
