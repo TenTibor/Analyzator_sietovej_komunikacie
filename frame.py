@@ -77,24 +77,24 @@ class Frame:
         print(f"Frame: {self.index}")
         print(f"PCAP API packet length: {self.lengthPacket}B")
         print(f"Real packet length: {self.mediumLength}B")
-        print(f"Zdrojová MAC adresa: {self.sourceMacAddress}")
-        print(f"Cieľová MAC adresa: {self.destinationMacAddress}")
+        print(f"Source MAC address: {self.sourceMacAddress}")
+        print(f"Destination MAC address: {self.destinationMacAddress}")
         print(self.packetType)
         print(f" -{self.protocol}")
 
         if self.ipvProtocol:
-            print(f" -Zdrojová IP adresa: {self.sourceIpAddress}")
-            print(f" -Cieľová IP adresa: {self.destinationIpAddress}")
+            print(f"  -Source IP address: {self.sourceIpAddress}")
+            print(f"  -Destination IP address: {self.destinationIpAddress}")
 
-            print(self.ipvProtocol)
+            print(" -" + self.ipvProtocol)
             # print ports
             if self.protocol_by_port:
                 print(self.protocol_by_port, end="")
 
             # print source and destination port
             if self.sourcePort:
-                print(" -Source port: " + str(self.sourcePort))
-                print(" -Destination port: " + str(self.destinationPort))
+                print("  -Source port: " + str(self.sourcePort))
+                print("  -Destination port: " + str(self.destinationPort))
 
         if self.protocol == "ARP":
             print("  -Opcode: " + ("Request" if self.op_code == 1 else "Reply"))
