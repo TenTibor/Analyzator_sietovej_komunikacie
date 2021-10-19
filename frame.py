@@ -123,7 +123,7 @@ class Frame:
 
             # get UDP, TCP, ..
             self.ipvProtocol = self.hexPacket[46:48]
-            for xProtocol in self.db_protocols[8:]:
+            for xProtocol in self.db_protocols[9:]:
                 if xProtocol[0] == self.ipvProtocol or xProtocol[1] == self.ipvProtocol:
                     self.ipvProtocol = xProtocol[2].replace("\n", "")
 
@@ -133,7 +133,7 @@ class Frame:
                         self.destinationPort = int(self.hexPacket[self.endOfHead + 20:self.endOfHead + 24], 16)
 
                         # print protocol by destination port
-                        for yProtocol in self.db_protocols[11:]:
+                        for yProtocol in self.db_protocols[12:]:
                             # print(xProtocol[1], sourcePort)
                             if int(yProtocol[1]) == self.destinationPort:
                                 self.protocol_by_port = yProtocol[2]
@@ -156,7 +156,7 @@ class Frame:
         self.packetType = "IEEE 802.3"
 
         self.protocol = "LLC"
-        for xProtocol in self.db_protocols[4:]:
+        for xProtocol in self.db_protocols[5:]:
             # print(xProtocol[1], sourcePort)
             if xProtocol[0] == packetHexForType:
                 protocol = xProtocol[1].replace("\n", "")
