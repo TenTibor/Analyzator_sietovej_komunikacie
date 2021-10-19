@@ -23,6 +23,10 @@ class Frame:
     sourcePort = None
     destinationPort = None
 
+    op_code = None
+    sender_ip_address = None
+    target_ip_address = None
+
     def __repr__(self):
         return str(self.index)
 
@@ -32,7 +36,7 @@ class Frame:
         self.db_protocols = protocols
 
         # calc everything
-        self.calc_frame()
+        self.calc_whole_frame()
 
     def get_hex_from_raw(self, rawPacket):
         rawPacket = raw(rawPacket)
@@ -77,6 +81,7 @@ class Frame:
         print(f"Cieľová MAC adresa: {self.destinationMacAddress}")
         print(self.packetType)
         print(f" -{self.protocol}")
+
         if self.ipvProtocol:
             print(f" -Zdrojová IP adresa: {self.sourceIpAddress}")
             print(f" -Cieľová IP adresa: {self.destinationIpAddress}")
@@ -91,7 +96,9 @@ class Frame:
                 print(" -Source port: " + str(self.sourcePort))
                 print(" -Destination port: " + str(self.destinationPort))
 
-        # self.print_hex()
+        if self.protocol == "ARP":
+            print("  -Opcode: " + ("Request" if self.op_code == 1 else "Reply"))
+
         print("\n------------------------------------------------")
 
     def calc_ethernet(self):
@@ -132,9 +139,10 @@ class Frame:
         if self.protocol == "ARP":
             # Calculate source IP address
             self.sourceIpAddress = self.calc_ip_address_from_hex(56)
-
             # Calculate destination IP address
             self.destinationIpAddress = self.calc_ip_address_from_hex(56 + 20)
+
+            self.op_code = int(self.hexPacket[43], 16)
 
     def calc_ieee(self):
         # If it is not ethernet II, get another B to check
@@ -147,7 +155,7 @@ class Frame:
             if xProtocol[0] == packetHexForType:
                 protocol = xProtocol[1].replace("\n", "")
 
-    def calc_frame(self):
+    def calc_whole_frame(self):
         # length calculation
         self.calculate_length()
 

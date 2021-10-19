@@ -3,8 +3,11 @@ from scapy.all import *
 from frame import Frame
 
 # load files and create db
-file = "eth-2.pcap"  # ethernet
+# file = "eth-2.pcap"  # ethernet
 # file = "trace-15.pcap"  # ARP
+file = "trace-26.pcap"  # ARP
+
+
 data = rdpcap('vzorky/' + file)
 print(f"[File '{file}' was loaded]\n")
 file = open('db.txt', "r")
@@ -117,6 +120,9 @@ def calc_all_frames():
                 currDestinationPort = this_frame.sourcePort
 
             communications_tftp[currIndex][0].append(this_frame)
+
+        # CALC ARP
+
 
 
 def print_everything():
