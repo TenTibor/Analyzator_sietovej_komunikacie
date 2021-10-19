@@ -23,6 +23,9 @@ class Frame:
     sourcePort = None
     destinationPort = None
 
+    def __repr__(self):
+        return str(self.index)
+
     def __init__(self, rawPacket, index, protocols):
         self.get_hex_from_raw(rawPacket)
         self.index = index

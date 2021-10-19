@@ -57,6 +57,50 @@ def tftp_communications():
         # print("Packets: " + communication[index][0])
 
 
+def arp_communications():
+    communications = []
+    # 1 - packet
+    # 2 - source port
+    currDestinationPort = None
+    currIndex = None
+    for index, packet in enumerate(data):
+        # get frame
+        this_frame = Frame(packet, index + 1, protocols)
+
+        # check if it is TFTP read request
+        if this_frame.protocol_by_port == "TFTP":
+            communications.append([
+                [this_frame],
+                this_frame.sourcePort
+            ])
+            if currIndex is None:
+                currIndex = 0
+            else:
+                currIndex += 1
+                currDestinationPort = None
+
+        # check if this frame is part of TFTP communication
+        if currIndex is not None and (this_frame.destinationPort == communications[currIndex][1]
+                                      or this_frame.destinationPort == currDestinationPort):
+            this_frame.protocol_by_port = "TFTP"
+            if currDestinationPort is None:
+                currDestinationPort = this_frame.sourcePort
+            communications[currIndex][0].append(
+                this_frame,
+            )
+            # if len(communications[currIndex])
+
+        # print frame
+        # this_frame.print_frame()
+    print("All TFTP communication minified")
+    print("Count of all: " + str(len(communications)))
+    for index, communication in enumerate(communications):
+        print(f"Communication {str(index + 1)} - {len(communication[0])} frames")
+        print(f"Source IP: {communication[0][0].sourceIpAddress}:{communication[0][0].sourcePort}    "
+              f"Destination IP: {communication[0][0].destinationIpAddress}:{communication[0][0].destinationPort}")
+        print("Packets:", communication[0], "\n")
+
+
 def all_frames():
     for index, packet in enumerate(data):
         # get frame
