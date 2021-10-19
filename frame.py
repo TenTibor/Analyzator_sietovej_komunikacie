@@ -84,7 +84,7 @@ class Frame:
                 self.sourcePort = int(self.hexPacket[self.endOfHead + 16:self.endOfHead + 20], 16)
 
                 # print protocol by source port
-                for xProtocol in self.db_protocols[9:]:
+                for xProtocol in self.db_protocols[11:]:
                     # print(xProtocol[1], sourcePort)
                     if int(xProtocol[1]) == self.sourcePort:
                         print("- " + xProtocol[2].replace("\n", ""))
@@ -99,11 +99,12 @@ class Frame:
     def calc_ethernet(self):
         self.packetType = "Ethernet II"
         self.protocol = self.hexPacket[24:28]
+        print(self.protocol)
 
         for xProtocol in self.db_protocols:
             if xProtocol[0] == self.protocol:
                 self.protocol = xProtocol[1].replace("\n", "")
-        lengthHead = int(self.hexPacket[29]) * 4
+        lengthHead = int(self.hexPacket[28:29]) * 4
 
         if self.protocol == "IPv4":
             self.endOfHead = 32 + lengthHead
@@ -116,18 +117,16 @@ class Frame:
 
             # get UDP, TCP, ..
             self.ipvProtocol = self.hexPacket[46:48]
-            for xProtocol in self.db_protocols[7:]:
+            for xProtocol in self.db_protocols[8:]:
                 if xProtocol[0] == self.ipvProtocol or xProtocol[1] == self.ipvProtocol:
                     self.ipvProtocol = xProtocol[2].replace("\n", "")
 
         if self.protocol == "ARP":
-
             # Calculate source IP address
             self.sourceIpAddress = self.calc_ip_address_from_hex(56)
 
             # Calculate destination IP address
             self.destinationIpAddress = self.calc_ip_address_from_hex(56 + 20)
-
 
     def calc_ieee(self):
         # If it is not ethernet II, get another B to check
@@ -135,7 +134,7 @@ class Frame:
         self.packetType = "IEEE 802.3"
 
         self.protocol = "LLC"
-        for xProtocol in self.db_protocols[3:]:
+        for xProtocol in self.db_protocols[4:]:
             # print(xProtocol[1], sourcePort)
             if xProtocol[0] == packetHexForType:
                 protocol = xProtocol[1].replace("\n", "")
@@ -151,7 +150,7 @@ class Frame:
         packetEtherTypeHex = self.hexPacket[24:28]
 
         # get product type
-        if packetEtherTypeHex > "05DC":
+        if packetEtherTypeHex >= "05DC":
             # Ethernet
             self.calc_ethernet()
         else:
