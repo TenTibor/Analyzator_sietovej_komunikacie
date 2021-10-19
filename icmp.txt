@@ -1,0 +1,43 @@
+0 Echo-reply
+3 Destination-Unreachable
+4 Source-Quench
+5 Redirect
+8 Echo
+9 Router-Advertisement
+10 Router-Selection
+11 Time-Exceeded
+12 Parameter-Problem
+13 Timestamp
+14 Timestamp-Reply
+15 Information-Request
+16 Information-Reply
+17 Address Mask-Request
+18 Address Mask-Reply
+30 Traceroute
+# Destination Unreachable
+0 Net-Unreachable
+1 Host-Unreachable
+2 Protocol-Unreachable
+3 Port-Unreachable
+4 Fragmentation-Needed-n-DF-set
+5 Source-Host-Isolated
+6 Destination-Network-Unknown
+7 Destination-Host-Unknown
+8 Source-Host-Isolated
+9 Network-Administratively-Prohibited
+10 Host-Administratively-Prohibited
+11 Network-Unreachable-for-TOS
+12 Host-Unreachable-for-TOS
+13 Communication-Administratively-Prohibited
+# Redirect
+0 Redirect-Datagram-for-the-Network
+1 Redirect-Datagram-for-the-Host
+2 Redirect-Datagram-for-the-TOS-n-Network
+3 Redirect-Datagram-for-the-TOS-n-Host
+# Time Exceeded
+0 Time-to-live-exceeded-in-Transit
+1 Fragment-Reassembly-Time-Exceeded
+# Parameter Problem
+0 Pointer-indicates-the-error
+1 Missing-a-Required-Option
+2 Bad Length
