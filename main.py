@@ -3,8 +3,8 @@ from scapy.all import *
 from frame import Frame
 
 # load files and create db
-# file = "eth-2.pcap"  # ethernet
-file = "trace-27.pcap"  # ARP
+file = "eth-2.pcap"  # ethernet
+# file = "trace-15.pcap"  # ARP
 data = rdpcap('vzorky/' + file)
 print(f"[File '{file}' was loaded]\n")
 file = open('db.txt', "r")
@@ -12,6 +12,7 @@ protocols = []
 for iProtocol in file:
     protocols.append(iProtocol.split(" "))
 
+all_frames = []
 # 1 - packet
 # 2 - source port
 communications_tftp = []
@@ -79,6 +80,7 @@ def calc_all_frames():
     for index, packet in enumerate(data):
         # get frame
         this_frame = Frame(packet, index + 1, protocols)
+        all_frames.append(this_frame)
 
         # CALC MOST USED
         # get source ip from frame
@@ -117,11 +119,16 @@ def calc_all_frames():
             communications_tftp[currIndex][0].append(this_frame)
 
 
+def print_everything():
+    for frame in all_frames:
+        frame.print_frame()
+
+
 def most_used_ip_addresses():
     # Print all ethernet source address
     print("=== List of all used IP address ===")
     for node in allEthernetNodes:
-        print(node)
+        print(node[0])
 
     # find most used and print it
     mostUsed = [None, 0]
@@ -138,7 +145,8 @@ calc_all_frames()
 # INTERFACE
 # arp_communications()
 # tftp_communications()
-most_used_ip_addresses()
+# most_used_ip_addresses()
+print_everything()
 
 # userResponse = ""
 # while userResponse != "q":

@@ -78,13 +78,13 @@ class Frame:
         print(self.packetType)
         print(f" -{self.protocol}")
         if self.ipvProtocol:
-            print(" -" + self.ipvProtocol)
             print(f" -Zdrojová IP adresa: {self.sourceIpAddress}")
             print(f" -Cieľová IP adresa: {self.destinationIpAddress}")
 
+            print(self.ipvProtocol)
             # print ports
             if self.protocol_by_port:
-                print(self.protocol_by_port)
+                print(self.protocol_by_port, end="")
 
             # print source and destination port
             if self.sourcePort:
