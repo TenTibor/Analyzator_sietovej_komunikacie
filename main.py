@@ -19,52 +19,9 @@ all_frames = []
 # 2 - source port
 communications_tftp = []
 communications_arp = []
+communications_icmp = []
 allEthernetNodes = []
 
-
-# def arp_communications():
-#     communications = []
-#     # 1 - packet
-#     # 2 - source port
-#     currDestinationPort = None
-#     currIndex = None
-#     for index, packet in enumerate(data):
-#         # get frame
-#         this_frame = Frame(packet, index + 1, protocols)
-#
-#         # check if it is TFTP read request
-#         if this_frame.protocol_by_port == "TFTP":
-#             communications.append([
-#                 [this_frame.index],
-#                 this_frame.sourcePort
-#             ])
-#             if currIndex is None:
-#                 currIndex = 0
-#             else:
-#                 currIndex += 1
-#                 currDestinationPort = None
-#
-#         # check if this frame is part of TFTP communication
-#         print(index + 1, this_frame.destinationPort, currDestinationPort)
-#         if currIndex is not None and (this_frame.destinationPort == communications[currIndex][1]
-#                                       or this_frame.destinationPort == currDestinationPort):
-#             this_frame.protocol_by_port = "TFTP"
-#             if currDestinationPort is None:
-#                 currDestinationPort = this_frame.sourcePort
-#             communications[currIndex][0].append(
-#                 this_frame.index,
-#             )
-#             # if len(communications[currIndex])
-#
-#         # print frame
-#         # this_frame.print_frame()
-#     print("All TFTP communication minified")
-#     print("Count of all: " + str(len(communications)))
-#     for index, communication in enumerate(communications):
-#         print(f"Communication {str(index + 1)} ({len(communication[0])}), src: {communication[1]}")
-#         print("Packets:", communication[0])
-#         # print("Packets: " + communication[index][0])
-#
 
 def tftp_communications():
     print("All TFTP communication minified")
@@ -77,7 +34,6 @@ def tftp_communications():
 
 
 def arp_communications():
-    print(communications_arp)
     print("All ARP communication minified")
     print("Count of all: " + str(len(communications_arp)))
     print("========================")
@@ -158,7 +114,6 @@ def calc_all_frames():
                         communications_arp[index][3].append(this_frame)
                         communications_arp[index][5] = this_frame.destinationMacAddress
                         found = True
-                        print(this_frame)
                 if not found:
                     communications_arp.append([
                         this_frame.target_ip_address, this_frame.sender_ip_address,
@@ -166,9 +121,19 @@ def calc_all_frames():
                         "???", this_frame.sourceMacAddress,
                     ])
 
+        # CALC ARP
+        if this_frame.ipvProtocol == "ICMP":
+            communications_icmp.append(this_frame)
+
 
 def print_everything():
     for frame in all_frames:
+        frame.print_frame()
+
+
+def print_icmp():
+    print("=== List of all ICMP protocols ===")
+    for frame in communications_icmp:
         frame.print_frame()
 
 
@@ -191,10 +156,11 @@ def most_used_ip_addresses():
 calc_all_frames()
 
 # INTERFACE
-arp_communications()
+print_icmp()
+# print_everything()
+# arp_communications()
 # tftp_communications()
 # most_used_ip_addresses()
-# print_everything()
 
 # userResponse = ""
 # while userResponse != "q":
@@ -202,6 +168,7 @@ arp_communications()
 #     print("2 - Most used IP address")
 #     print("3 - All TFTP communications")
 #     print("4 - All ARP communications")
+#     print("5 - All ICMP communications")
 #     print("q - Quit application")
 #     print("----------------------------")
 #     print("Type action > ", end="")
@@ -213,3 +180,5 @@ arp_communications()
 #         tftp_communications()
 #     elif userResponse == "4":
 #         arp_communications()
+#     elif userResponse == "5":
+#         print_icmp()

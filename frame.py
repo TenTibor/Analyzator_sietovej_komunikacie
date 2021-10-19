@@ -23,9 +23,14 @@ class Frame:
     sourcePort = None
     destinationPort = None
 
+    # ARP
     op_code = None
     sender_ip_address = None
     target_ip_address = None
+
+    # ICMP
+    icmp_type = None
+    icmp_code = None
 
     def __repr__(self):
         return str(self.index)
@@ -75,8 +80,8 @@ class Frame:
 
     def print_frame(self):
         print(f"Frame: {self.index}")
-        print(f"PCAP API packet length: {self.lengthPacket}B")
-        print(f"Real packet length: {self.mediumLength}B")
+        print(f"PCAP API packet length: {self.lengthPacket} B")
+        print(f"Real packet length: {self.mediumLength} B")
         print(f"Source MAC address: {self.sourceMacAddress}")
         print(f"Destination MAC address: {self.destinationMacAddress}")
         print(self.packetType)
@@ -87,6 +92,11 @@ class Frame:
             print(f"  -Destination IP address: {self.destinationIpAddress}")
 
             print(" -" + self.ipvProtocol)
+
+            # print ICMP
+            if self.icmp_type is not None:
+                print("  -" + self.icmp_type)
+
             # print ports
             if self.protocol_by_port:
                 print(self.protocol_by_port, end="")
@@ -100,7 +110,7 @@ class Frame:
             print("  -Opcode: " + ("Request" if self.op_code == 1 else "Reply"))
             print("  -Sender IP address: " + self.sender_ip_address)
             print("  -Target IP address: " + self.target_ip_address)
-
+        self.print_hex()
         print("\n------------------------------------------------")
 
     def calc_ethernet(self):
@@ -138,6 +148,10 @@ class Frame:
                             if int(yProtocol[1]) == self.destinationPort:
                                 self.protocol_by_port = yProtocol[2]
 
+            # calc ICMP protocol
+            if self.ipvProtocol == "ICMP":
+                self.icmp_type = self.hexPacket[1108:1108 + 2]
+
         if self.protocol == "ARP":
             # Calculate source & destination IP address
             self.sourceIpAddress = self.calc_ip_address_from_hex(56)
@@ -147,8 +161,6 @@ class Frame:
             # get source and target IP address
             self.sender_ip_address = self.calc_ip_address_from_hex(56)
             self.target_ip_address = self.calc_ip_address_from_hex(76)
-
-            #
 
     def calc_ieee(self):
         # If it is not ethernet II, get another B to check
