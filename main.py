@@ -1,7 +1,7 @@
 from scapy.all import *
 
 # load files and create db
-data = rdpcap('vzorky/trace-20.pcap')
+data = rdpcap('vzorky/trace-5.pcap')
 file = open('db.txt', "r")
 protocols = []
 for iProtocol in file:
@@ -102,31 +102,32 @@ def all_frames():
         print(f"Rámec: {index + 1}")
         print(f"Dĺžka rámca poskytnutá pcap API - {lengthPacket} B")
         print(f"Dĺžka rámca prenášaného po médiu - {mediumLength} B")
-        print(f"Typ: {packetType}")
-        print(f"Protocol: {protocol}")
+        print(packetType)
+        print(f" -{protocol}")
         if sourceIpAddress:
-            print(f"Zdrojová IP adresa: {sourceIpAddress}")
-            print(f"Cieľová IP adresa: {destinationIpAddress}")
-        print(f"Zdrojová MAC adresa: {sourceMacAddress}")
-        print(f"Cieľová MAC adresa: {destinationMacAddress}")
+            print(f" -Zdrojová IP adresa: {sourceIpAddress}")
+            print(f" -Cieľová IP adresa: {destinationIpAddress}")
+        print(f" -Zdrojová MAC adresa: {sourceMacAddress}")
+        print(f" -Cieľová MAC adresa: {destinationMacAddress}")
 
         # print ports
         if ipvProtocol:
-            print(ipvProtocol)
             if ipvProtocol == "TCP" or ipvProtocol == "UDP":
+                print(ipvProtocol)
                 sourcePort = int(hexPacket[endOfHead + 16:endOfHead + 20], 16)
 
                 # print protocol by source port
                 for xProtocol in protocols[9:]:
                     # print(xProtocol[1], sourcePort)
                     if int(xProtocol[1]) == sourcePort:
-                        print(xProtocol[2].replace("\n", ""))
+                        print("- " + xProtocol[2].replace("\n", ""))
 
                 # print source and destination port
-                print("Source port: " + str(sourcePort))
-                print("Destination port: " + str(int(hexPacket[endOfHead + 20:endOfHead + 24], 16)))
+                print(" -Source port: " + str(sourcePort))
+                print(" -Destination port: " + str(int(hexPacket[endOfHead + 20:endOfHead + 24], 16)))
 
         # print hex packet
+        print("")
         for index, char in enumerate(hexPacket):
             print(char, end="")
             if index % 2:
@@ -135,10 +136,9 @@ def all_frames():
                 print(" ", end="")
             if index % 32 == 31:
                 print("")
-        print("\n")
+        print("\n------------------------------------------------")
 
     # Print all ethernet source address
-    print("===============================================")
     print("Zoznam IP adries všetkých odosielajúcich uzlov:")
     for node in allEthernetNodes:
         print(node[0])
@@ -149,6 +149,13 @@ def all_frames():
         if node[1] > mostUsed[1]:
             mostUsed = node
 
-    print(f"Najviac bola pou69van8 adresa {mostUsed[0]} s {mostUsed[1]} paketmi")
+    print(f"Najviac bola pouzivana adresa {mostUsed[0]} s {mostUsed[1]} paketmy")
 
-all_frames()
+
+print("Choose your action:")
+print("1 - Get all frames")
+# userResponse = input()
+userResponse = "1"
+print(userResponse)
+if userResponse == "1":
+    all_frames()
