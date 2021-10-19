@@ -61,17 +61,21 @@ def most_used_ip_addresses():
 
 
 # INTERFACE
-print("Choose your action:")
-print("1 - Get all frames")
-print("2 - Most used IP address")
-print("3 - All TFTP communications")
-print("> ", end="")
-userResponse = input()
-# userResponse = "1"
-print(userResponse)
-if userResponse == "1":
-    all_frames()
-elif userResponse == "2":
-    most_used_ip_addresses()
-elif userResponse == "3":
-    tftp_communications()
+userResponse = ""
+while userResponse != "q":
+    print("Actions list:")
+    print("1 - Get all frames")
+    print("2 - Most used IP address")
+    print("3 - All TFTP communications")
+    print("q - Quit application")
+    print("----------------------------")
+    print("Type action > ", end="")
+    userResponse = input()
+    # userResponse = "1"
+    print(userResponse)
+    if userResponse == "1":
+        all_frames()
+    elif userResponse == "2":
+        most_used_ip_addresses()
+    elif userResponse == "3":
+        tftp_communications()
