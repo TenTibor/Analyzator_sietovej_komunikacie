@@ -104,30 +104,31 @@ class Frame:
                 self.protocol = xProtocol[1].replace("\n", "")
         lengthHead = int(self.hexPacket[29]) * 4
 
-        # Calculate source IP address
-        self.endOfHead = 32 + lengthHead
-        sourceIpAddressHex = self.hexPacket[self.endOfHead:self.endOfHead + 8]
-        i = 0
-        while i < len(sourceIpAddressHex):
-            self.sourceIpAddress += str(int(sourceIpAddressHex[i] + sourceIpAddressHex[i + 1], 16))
-            if i + 2 != len(sourceIpAddressHex):
-                self.sourceIpAddress += ":"
-            i += 2
+        if self.protocol == "IPv4":
+            # Calculate source IP address
+            self.endOfHead = 32 + lengthHead
+            sourceIpAddressHex = self.hexPacket[self.endOfHead:self.endOfHead + 8]
+            i = 0
+            while i < len(sourceIpAddressHex):
+                self.sourceIpAddress += str(int(sourceIpAddressHex[i] + sourceIpAddressHex[i + 1], 16))
+                if i + 2 != len(sourceIpAddressHex):
+                    self.sourceIpAddress += ":"
+                i += 2
 
-        # Calculate destination IP address
-        destinationIpAddressHex = self.hexPacket[self.endOfHead + 8:self.endOfHead + 16]
-        i = 0
-        while i < len(destinationIpAddressHex):
-            self.destinationIpAddress += str(int(destinationIpAddressHex[i] + destinationIpAddressHex[i + 1], 16))
-            if i + 2 != len(destinationIpAddressHex):
-                self.destinationIpAddress += ":"
-            i += 2
+            # Calculate destination IP address
+            destinationIpAddressHex = self.hexPacket[self.endOfHead + 8:self.endOfHead + 16]
+            i = 0
+            while i < len(destinationIpAddressHex):
+                self.destinationIpAddress += str(int(destinationIpAddressHex[i] + destinationIpAddressHex[i + 1], 16))
+                if i + 2 != len(destinationIpAddressHex):
+                    self.destinationIpAddress += ":"
+                i += 2
 
-        # get UDP, TCP, ..
-        self.ipvProtocol = self.hexPacket[46:48]
-        for xProtocol in self.db_protocols[7:]:
-            if xProtocol[0] == self.ipvProtocol or xProtocol[1] == self.ipvProtocol:
-                self.ipvProtocol = xProtocol[2].replace("\n", "")
+            # get UDP, TCP, ..
+            self.ipvProtocol = self.hexPacket[46:48]
+            for xProtocol in self.db_protocols[7:]:
+                if xProtocol[0] == self.ipvProtocol or xProtocol[1] == self.ipvProtocol:
+                    self.ipvProtocol = xProtocol[2].replace("\n", "")
 
     def calc_ieee(self):
         # If it is not ethernet II, get another B to check
