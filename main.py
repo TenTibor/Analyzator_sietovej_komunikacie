@@ -1,7 +1,9 @@
 from scapy.all import *
 
 # load files and create db
-data = rdpcap('vzorky/trace-5.pcap')
+file = "trace-5.pcap"
+data = rdpcap('vzorky/' + file)
+print(f"[File '{file}' was loaded]\n")
 file = open('db.txt', "r")
 protocols = []
 for iProtocol in file:
@@ -158,10 +160,12 @@ def all_frames():
     print(f"Najviac bola pouzivana adresa {mostUsed[0]} s {mostUsed[1]} paketmy")
 
 
+# INTERFACE
 print("Choose your action:")
 print("1 - Get all frames")
-# userResponse = input()
-userResponse = "1"
+print("> ", end="")
+userResponse = input()
+# userResponse = "1"
 print(userResponse)
 if userResponse == "1":
     all_frames()
