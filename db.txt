@@ -1,6 +1,7 @@
 0800 IPv4
 0806 ARP
 86dd IPv6
+9000 Loopback
 42 STP
 aa SNAP
 ff RAW
