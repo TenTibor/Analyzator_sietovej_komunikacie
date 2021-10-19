@@ -98,6 +98,8 @@ class Frame:
 
         if self.protocol == "ARP":
             print("  -Opcode: " + ("Request" if self.op_code == 1 else "Reply"))
+            print("  -Sender IP address: " + self.sender_ip_address)
+            print("  -Target IP address: " + self.target_ip_address)
 
         print("\n------------------------------------------------")
 
@@ -137,12 +139,16 @@ class Frame:
                                 self.protocol_by_port = yProtocol[2]
 
         if self.protocol == "ARP":
-            # Calculate source IP address
+            # Calculate source & destination IP address
             self.sourceIpAddress = self.calc_ip_address_from_hex(56)
-            # Calculate destination IP address
-            self.destinationIpAddress = self.calc_ip_address_from_hex(56 + 20)
-
+            self.destinationIpAddress = self.calc_ip_address_from_hex(66)
+            # get op code
             self.op_code = int(self.hexPacket[43], 16)
+            # get source and target IP address
+            self.sender_ip_address = self.calc_ip_address_from_hex(56)
+            self.target_ip_address = self.calc_ip_address_from_hex(76)
+
+            #
 
     def calc_ieee(self):
         # If it is not ethernet II, get another B to check

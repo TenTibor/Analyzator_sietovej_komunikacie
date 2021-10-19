@@ -7,7 +7,6 @@ from frame import Frame
 # file = "trace-15.pcap"  # ARP
 file = "trace-26.pcap"  # ARP
 
-
 data = rdpcap('vzorky/' + file)
 print(f"[File '{file}' was loaded]\n")
 file = open('db.txt', "r")
@@ -19,6 +18,7 @@ all_frames = []
 # 1 - packet
 # 2 - source port
 communications_tftp = []
+communications_arp = []
 allEthernetNodes = []
 
 
@@ -76,6 +76,19 @@ def tftp_communications():
         print("Packets:", communication[0], "\n")
 
 
+def arp_communications():
+    print(communications_arp)
+    print("All ARP communication minified")
+    print("Count of all: " + str(len(communications_arp)))
+    print("========================")
+    for index, pair in enumerate(communications_arp):
+        print(f"Pair {str(index + 1)} - "
+              f"{'Paired' if len(pair[2]) != 0 and len(pair[3]) != 0 else 'Not paired'}")
+        print(f"Sender IP: {pair[0]} ",
+              f"Target IP: {pair[1]}")
+        print("Packets:", pair[2], pair[3], "\n")
+
+
 def calc_all_frames():
     currDestinationPort = None
     currIndex = None
@@ -122,7 +135,29 @@ def calc_all_frames():
             communications_tftp[currIndex][0].append(this_frame)
 
         # CALC ARP
+        if this_frame.protocol == "ARP":
+            found = False
+            if this_frame.op_code == 1:
+                for index, comm in enumerate(communications_arp):
+                    if this_frame.sender_ip_address == comm[0] and this_frame.target_ip_address == comm[1]:
+                        communications_arp[index][2].append(this_frame)
+                        found = True
+                if not found:
+                    communications_arp.append([
+                        this_frame.sender_ip_address, this_frame.target_ip_address,
+                        [this_frame], []
+                    ])
 
+            elif this_frame.op_code == 2:
+                for index, comm in enumerate(communications_arp):
+                    if this_frame.sender_ip_address == comm[1] and this_frame.target_ip_address == comm[0]:
+                        communications_arp[index][3].append(this_frame)
+                        found = True
+                if not found:
+                    communications_arp.append([
+                        this_frame.target_ip_address, this_frame.sender_ip_address,
+                        [], [this_frame]
+                    ])
 
 
 def print_everything():
@@ -149,10 +184,10 @@ def most_used_ip_addresses():
 calc_all_frames()
 
 # INTERFACE
-# arp_communications()
+arp_communications()
 # tftp_communications()
 # most_used_ip_addresses()
-print_everything()
+# print_everything()
 
 # userResponse = ""
 # while userResponse != "q":
