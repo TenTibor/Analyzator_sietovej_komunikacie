@@ -186,7 +186,7 @@ class Frame:
         while i < len(ip_address_hex):
             ip_address += str(int(ip_address_hex[i] + ip_address_hex[i + 1], 16))
             if i + 2 != len(ip_address_hex):
-                ip_address += ":"
+                ip_address += "."
             i += 2
 
         return ip_address

@@ -86,6 +86,8 @@ def arp_communications():
               f"{'Paired' if len(pair[2]) != 0 and len(pair[3]) != 0 else 'Not paired'}")
         print(f"Sender IP: {pair[0]} ",
               f"Target IP: {pair[1]}")
+        print(f"Source MAC: {pair[4]} ",
+              f"Destination MAC: {pair[5]}")
         print("Packets:", pair[2], pair[3], "\n")
 
 
@@ -141,22 +143,27 @@ def calc_all_frames():
                 for index, comm in enumerate(communications_arp):
                     if this_frame.sender_ip_address == comm[0] and this_frame.target_ip_address == comm[1]:
                         communications_arp[index][2].append(this_frame)
+                        communications_arp[index][4] = this_frame.sourceMacAddress
                         found = True
                 if not found:
                     communications_arp.append([
                         this_frame.sender_ip_address, this_frame.target_ip_address,
-                        [this_frame], []
+                        [this_frame], [],
+                        this_frame.sourceMacAddress, "???"
                     ])
 
             elif this_frame.op_code == 2:
                 for index, comm in enumerate(communications_arp):
                     if this_frame.sender_ip_address == comm[1] and this_frame.target_ip_address == comm[0]:
                         communications_arp[index][3].append(this_frame)
+                        communications_arp[index][5] = this_frame.destinationMacAddress
                         found = True
+                        print(this_frame)
                 if not found:
                     communications_arp.append([
                         this_frame.target_ip_address, this_frame.sender_ip_address,
-                        [], [this_frame]
+                        [], [this_frame],
+                        "???", this_frame.sourceMacAddress,
                     ])
 
 
