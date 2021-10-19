@@ -92,6 +92,7 @@ class Frame:
                 # print source and destination port
                 print(" -Source port: " + str(self.sourcePort))
                 print(" -Destination port: " + str(int(self.hexPacket[self.endOfHead + 20:self.endOfHead + 24], 16)))
+
         self.print_hex()
         print("\n------------------------------------------------")
 
@@ -108,16 +109,25 @@ class Frame:
             self.endOfHead = 32 + lengthHead
 
             # Calculate source IP address
-            self.sourceIpAddress = self.calc_ip_address(self.endOfHead)
+            self.sourceIpAddress = self.calc_ip_address_from_hex(self.endOfHead)
 
             # Calculate destination IP address
-            self.destinationIpAddress = self.calc_ip_address(self.endOfHead + 8)
+            self.destinationIpAddress = self.calc_ip_address_from_hex(self.endOfHead + 8)
 
             # get UDP, TCP, ..
             self.ipvProtocol = self.hexPacket[46:48]
             for xProtocol in self.db_protocols[7:]:
                 if xProtocol[0] == self.ipvProtocol or xProtocol[1] == self.ipvProtocol:
                     self.ipvProtocol = xProtocol[2].replace("\n", "")
+
+        if self.protocol == "ARP":
+
+            # Calculate source IP address
+            self.sourceIpAddress = self.calc_ip_address_from_hex(56)
+
+            # Calculate destination IP address
+            self.destinationIpAddress = self.calc_ip_address_from_hex(56 + 20)
+
 
     def calc_ieee(self):
         # If it is not ethernet II, get another B to check
@@ -147,7 +157,7 @@ class Frame:
         else:
             self.calc_ieee()
 
-    def calc_ip_address(self, start_pointer):
+    def calc_ip_address_from_hex(self, start_pointer):
         ip_address_hex = self.hexPacket[start_pointer:start_pointer + 8]
         ip_address = ""
 
