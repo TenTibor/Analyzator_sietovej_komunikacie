@@ -150,31 +150,27 @@ def print_communication_by_protocol(protocol):
                 # Start of communication
                 if frame.flag == "SYN":
                     found_communications.append(
-                        [[frame], frame.destinationIpAddress, frame.sourcePort, False, False, False, ""]
+                        [[frame], frame.destinationIpAddress, frame.sourcePort, False, False, False, None]
+                        # closed, FIN-S, FIND-D, take last one
                     )
                 else:
                     # find where communication belong
                     for comm in found_communications:
-                        if (comm[1] == frame.sourceIpAddress or comm[1] == frame.destinationIpAddress)\
-                            and (comm[2] == frame.sourcePort or comm[2] == frame.destinationPort)\
-                                and comm[3] is False:
+                        if comm[6] == frame.index:
+                            comm[0].append(frame)
+                        elif (comm[2] == frame.sourcePort or comm[2] == frame.destinationPort) and comm[3] is False:
                             comm[0].append(frame)
 
                             # Communication is ending soon
                             if frame.flag == "FIN, ACK":
                                 comm[4 if frame.sourceIpAddress == comm[1] else 5] = True
-
-                                # Add also last one who sent this
-                                comm[6] = "L" if frame.sourceIpAddress == comm[1] else "R"
+                                if comm[4] is True and comm[5] is True:
+                                    comm[6] = frame.index + 1
 
                             # Communication is ending
                             if frame.flag == "RST, ACK" or frame.flag == "RST" or (comm[4] is True and comm[5] is True):
                                 comm[3] = True
                             break
-
-                # Communication continuing
-                # elif frame.flag != "SYN":
-                #     found_communications[currIndex][0].append(frame)
 
     for index, communication in enumerate(found_communications):
         print(protocol.upper() + " Communication: " + str(index + 1) + "(" + str(len(communication[0])) + ") - "
