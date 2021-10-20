@@ -1,9 +1,9 @@
-0 Echo-reply
-3 Destination-Unreachable
-4 Source-Quench
-5 Redirect
-8 Echo
-9 Router-Advertisement
+00 Echo-reply
+03 Destination-Unreachable
+04 Source-Quench
+05 Redirect
+08 Echo
+09 Router-Advertisement
 10 Router-Selection
 11 Time-Exceeded
 12 Parameter-Problem
@@ -15,29 +15,29 @@
 18 Address Mask-Reply
 30 Traceroute
 # Destination Unreachable
-0 Net-Unreachable
-1 Host-Unreachable
-2 Protocol-Unreachable
-3 Port-Unreachable
-4 Fragmentation-Needed-n-DF-set
-5 Source-Host-Isolated
-6 Destination-Network-Unknown
-7 Destination-Host-Unknown
-8 Source-Host-Isolated
-9 Network-Administratively-Prohibited
+00 Net-Unreachable
+01 Host-Unreachable
+02 Protocol-Unreachable
+03 Port-Unreachable
+04 Fragmentation-Needed-n-DF-set
+05 Source-Host-Isolated
+06 Destination-Network-Unknown
+07 Destination-Host-Unknown
+08 Source-Host-Isolated
+09 Network-Administratively-Prohibited
 10 Host-Administratively-Prohibited
 11 Network-Unreachable-for-TOS
 12 Host-Unreachable-for-TOS
 13 Communication-Administratively-Prohibited
 # Redirect
-0 Redirect-Datagram-for-the-Network
-1 Redirect-Datagram-for-the-Host
-2 Redirect-Datagram-for-the-TOS-n-Network
-3 Redirect-Datagram-for-the-TOS-n-Host
-# Time Exceeded
-0 Time-to-live-exceeded-in-Transit
-1 Fragment-Reassembly-Time-Exceeded
+00 Redirect-Datagram-for-the-Network
+01 Redirect-Datagram-for-the-Host
+02 Redirect-Datagram-for-the-TOS-n-Network
+03 Redirect-Datagram-for-the-TOS-n-Host
+0# Time Exceeded
+00 Time-to-live-exceeded-in-Transit
+01 Fragment-Reassembly-Time-Exceeded
 # Parameter Problem
-0 Pointer-indicates-the-error
-1 Missing-a-Required-Option
-2 Bad Length
+00 Pointer-indicates-the-error
+01 Missing-a-Required-Option
+02 Bad Length
