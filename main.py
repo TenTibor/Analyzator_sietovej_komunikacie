@@ -6,9 +6,9 @@ from frame import Frame
 # file = "eth-1.pcap"  # http, https
 # file = "trace-16.pcap"  # http tracking
 # file = "trace-18.pcap"  # ssh tracking
-file = "trace-20.pcap"  # ssh tracking, http
+# file = "trace-20.pcap"  # ssh tracking, http
 # file = "eth-2.pcap"  # ethernet
-# file = "trace-15.pcap"  # ARP, ICMP
+file = "trace-15.pcap"  # ARP, ICMP
 # file = "trace-26.pcap"  # ARP
 
 data = rdpcap('vzorky/' + file)
@@ -223,8 +223,8 @@ def most_used_ip_addresses():
 
 calc_all_frames()
 # INTERFACE
-print_communication_by_protocol("http")
-# print_icmp()
+# print_communication_by_protocol("http")
+print_icmp()
 # print_frames()
 # arp_communications()
 # tftp_communications()

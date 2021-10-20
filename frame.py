@@ -169,7 +169,15 @@ class Frame:
 
             # calc ICMP protocol
             if self.transportProtocol == "ICMP":
-                self.icmp_type = self.hexPacket[1108:1108 + 2]
+                icmp_type_hex = self.hexPacket[68:70]
+                icmp_data = self.load_icmp_data()
+
+                for row in icmp_data[:15]:
+                    print(row[0], icmp_type_hex)
+                    if row[0] == icmp_type_hex:
+                        self.icmp_type = row[1].replace("\n", "")
+
+                # self.icmp_type = self.hexPacket[68:70]
 
         if self.packetType == "ARP":
             # Calculate source & destination IP address
@@ -188,9 +196,8 @@ class Frame:
 
         self.packetType = "LLC"
         for xProtocol in self.db_protocols[5:]:
-            # print(xProtocol[1], sourcePort)
             if xProtocol[0] == packetHexForType:
-                protocol = xProtocol[1].replace("\n", "")
+                self.packetType = xProtocol[1].replace("\n", "")
 
     def calc_whole_frame(self):
         # length calculation
@@ -221,3 +228,10 @@ class Frame:
             i += 2
 
         return ip_address
+
+    def load_icmp_data(self):
+        file = open('icmp.txt', "r")
+        data = []
+        for iProtocol in file:
+            data.append(iProtocol.split(" "))
+        return data
