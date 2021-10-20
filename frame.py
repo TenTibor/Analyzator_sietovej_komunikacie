@@ -26,9 +26,9 @@ class Frame:
     destinationIpAddress = ""
 
     endOfHead = None
+    frameType = None
     packetType = None
-    protocol = None
-    ipvProtocol = None
+    transportProtocol = None
     protocol_by_port = None
 
     sourcePort = None
@@ -97,14 +97,14 @@ class Frame:
         print(f"Real packet length: {self.mediumLength} B")
         print(f"Source MAC address: {self.sourceMacAddress}")
         print(f"Destination MAC address: {self.destinationMacAddress}")
-        print(self.packetType)
-        print(f" -{self.protocol}")
+        print(self.frameType)
+        print(f" -{self.packetType}")
 
-        if self.ipvProtocol:
+        if self.transportProtocol:
             print(f"  -Source IP address: {self.sourceIpAddress}")
             print(f"  -Destination IP address: {self.destinationIpAddress}")
 
-            print(" -" + self.ipvProtocol)
+            print(" -" + self.transportProtocol)
 
             # print ICMP
             if self.icmp_type is not None:
@@ -123,23 +123,23 @@ class Frame:
                 print("   -Source port: " + str(self.sourcePort))
                 print("   -Destination port: " + str(self.destinationPort))
 
-        if self.protocol == "ARP":
+        if self.packetType == "ARP":
             print("  -Opcode: " + ("Request" if self.op_code == 1 else "Reply"))
             print("  -Sender IP address: " + self.sender_ip_address)
             print("  -Target IP address: " + self.target_ip_address)
-        self.print_hex()
+        # self.print_hex()
         print("\n------------------------------------------------")
 
     def calc_ethernet(self):
-        self.packetType = "Ethernet II"
-        self.protocol = self.hexPacket[24:28]
+        self.frameType = "Ethernet II"
+        self.packetType = self.hexPacket[24:28]
 
         for xProtocol in self.db_protocols:
-            if xProtocol[0] == self.protocol:
-                self.protocol = xProtocol[1].replace("\n", "")
+            if xProtocol[0] == self.packetType:
+                self.packetType = xProtocol[1].replace("\n", "")
         # lengthHead = int(self.hexPacket[28:29]) * 4
 
-        if self.protocol == "IPv4":
+        if self.packetType == "IPv4":
             self.endOfHead = 52
 
             # Calculate source IP address
@@ -149,13 +149,13 @@ class Frame:
             self.destinationIpAddress = self.calc_ip_address_from_hex(self.endOfHead + 8)
 
             # get UDP, TCP, ..
-            self.ipvProtocol = self.hexPacket[46:48]
+            self.transportProtocol = self.hexPacket[46:48]
             for xProtocol in self.db_protocols[9:]:
-                if xProtocol[0] == self.ipvProtocol or xProtocol[1] == self.ipvProtocol:
-                    self.ipvProtocol = xProtocol[2].replace("\n", "")
+                if xProtocol[0] == self.transportProtocol or xProtocol[1] == self.transportProtocol:
+                    self.transportProtocol = xProtocol[2].replace("\n", "")
 
                     # set protocols if TCP or UDP
-                    if self.ipvProtocol == "TCP" or self.ipvProtocol == "UDP":
+                    if self.transportProtocol == "TCP" or self.transportProtocol == "UDP":
                         self.sourcePort = int(self.hexPacket[self.endOfHead + 16:self.endOfHead + 20], 16)
                         self.destinationPort = int(self.hexPacket[self.endOfHead + 20:self.endOfHead + 24], 16)
 
@@ -164,14 +164,14 @@ class Frame:
                             if int(yProtocol[1]) == self.destinationPort or int(yProtocol[1]) == self.sourcePort:
                                 self.protocol_by_port = yProtocol[2].replace("\n", "")
 
-                    if self.ipvProtocol == "TCP":
+                    if self.transportProtocol == "TCP":
                         self.flag = flags[self.hexPacket[94:96]]
 
             # calc ICMP protocol
-            if self.ipvProtocol == "ICMP":
+            if self.transportProtocol == "ICMP":
                 self.icmp_type = self.hexPacket[1108:1108 + 2]
 
-        if self.protocol == "ARP":
+        if self.packetType == "ARP":
             # Calculate source & destination IP address
             self.sourceIpAddress = self.calc_ip_address_from_hex(56)
             self.destinationIpAddress = self.calc_ip_address_from_hex(66)
@@ -184,9 +184,9 @@ class Frame:
     def calc_ieee(self):
         # If it is not ethernet II, get another B to check
         packetHexForType = self.hexPacket[28:30]
-        self.packetType = "IEEE 802.3"
+        self.frameType = "IEEE 802.3"
 
-        self.protocol = "LLC"
+        self.packetType = "LLC"
         for xProtocol in self.db_protocols[5:]:
             # print(xProtocol[1], sourcePort)
             if xProtocol[0] == packetHexForType:
