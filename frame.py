@@ -109,6 +109,8 @@ class Frame:
             # print ICMP
             if self.icmp_type is not None:
                 print("  -" + self.icmp_type)
+                if self.icmp_code is not None:
+                    print("   -" + self.icmp_code)
 
             # print ports
             if self.protocol_by_port:
@@ -172,12 +174,32 @@ class Frame:
                 icmp_type_hex = self.hexPacket[68:70]
                 icmp_data = self.load_icmp_data()
 
-                for row in icmp_data[:15]:
-                    print(row[0], icmp_type_hex)
+                for row in icmp_data[:16]:
+                    # print(row[0], icmp_type_hex)
                     if row[0] == icmp_type_hex:
                         self.icmp_type = row[1].replace("\n", "")
 
-                # self.icmp_type = self.hexPacket[68:70]
+                        # check code
+                        if icmp_type_hex == "03":
+                            for rowB in icmp_data[17:31]:
+                                # print(row[0], icmp_type_hex)
+                                if rowB[0] == icmp_type_hex:
+                                    self.icmp_code = rowB[1].replace("\n", "")
+                        elif icmp_type_hex == "05":
+                            for rowB in icmp_data[32:36]:
+                                # print(row[0], icmp_type_hex)
+                                if rowB[0] == icmp_type_hex:
+                                    self.icmp_code = rowB[1].replace("\n", "")
+                        elif icmp_type_hex == "11":
+                            for rowB in icmp_data[37:39]:
+                                # print(row[0], icmp_type_hex)
+                                if rowB[0] == icmp_type_hex:
+                                    self.icmp_code = rowB[1].replace("\n", "")
+                        elif icmp_type_hex == "12":
+                            for rowB in icmp_data[40:]:
+                                # print(row[0], icmp_type_hex)
+                                if rowB[0] == icmp_type_hex:
+                                    self.icmp_code = rowB[1].replace("\n", "")
 
         if self.packetType == "ARP":
             # Calculate source & destination IP address

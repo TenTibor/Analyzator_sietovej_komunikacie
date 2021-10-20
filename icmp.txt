@@ -34,7 +34,7 @@
 01 Redirect-Datagram-for-the-Host
 02 Redirect-Datagram-for-the-TOS-n-Network
 03 Redirect-Datagram-for-the-TOS-n-Host
-0# Time Exceeded
+# Time Exceeded
 00 Time-to-live-exceeded-in-Transit
 01 Fragment-Reassembly-Time-Exceeded
 # Parameter Problem
