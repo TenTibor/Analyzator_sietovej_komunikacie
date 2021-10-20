@@ -8,8 +8,8 @@ from frame import Frame
 # file = "trace-18.pcap"  # ssh tracking
 # file = "trace-20.pcap"  # ssh tracking, http
 # file = "eth-2.pcap"  # ethernet
-file = "trace-15.pcap"  # ARP, ICMP
-# file = "trace-26.pcap"  # ARP
+# file = "trace-15.pcap"  # ARP, ICMP, tftp
+file = "trace-26.pcap"  # ARP
 
 data = rdpcap('vzorky/' + file)
 print(f"[File '{file}' was loaded]\n")
@@ -27,18 +27,21 @@ communications_icmp = []
 allEthernetNodes = []
 
 
-def tftp_communications():
-    print("All TFTP communication minified")
+def print_tftp():
+    print("All TFTP communications")
     print("Count of all: " + str(len(communications_tftp)))
     for index, communication in enumerate(communications_tftp):
         print(f"Communication {str(index + 1)} - {len(communication[0])} frames")
         print(f"Source IP: {communication[0][0].sourceIpAddress}:{communication[0][0].sourcePort}    "
               f"Destination IP: {communication[0][0].destinationIpAddress}:{communication[0][0].destinationPort}")
-        print("Packets:", communication[0], "\n")
+        print("Packets:")
+        print_frames_limits(communication[0])
+        print("===============================================================================")
+        print("===============================================================================")
 
 
-def arp_communications():
-    print("All ARP communication minified")
+def print_arp():
+    print("All ARP communication")
     print("Count of all: " + str(len(communications_arp)))
     print("========================")
     for index, pair in enumerate(communications_arp):
@@ -48,7 +51,10 @@ def arp_communications():
               f"Target IP: {pair[1]}")
         print(f"Source MAC: {pair[4]} ",
               f"Destination MAC: {pair[5]}")
-        print("Packets:", pair[2], pair[3], "\n")
+        print_frames_limits(pair[2])
+        print_frames_limits(pair[3])
+        print("===============================================================================")
+        print("===============================================================================")
 
 
 def calc_all_frames():
@@ -200,12 +206,12 @@ def print_communication_by_protocol(protocol):
 
 
 def print_icmp():
-    print("=== List of all ICMP protocols ===")
+    print("==== List of all ICMP protocols ====")
     for frame in communications_icmp:
         frame.print_frame()
 
 
-def most_used_ip_addresses():
+def print_most_used_ip_addresses():
     # Print all ethernet source address
     print("=== List of all used IP address ===")
     for node in allEthernetNodes:
@@ -224,7 +230,7 @@ def most_used_ip_addresses():
 calc_all_frames()
 # INTERFACE
 # print_communication_by_protocol("http")
-print_icmp()
+# print_icmp()
 # print_frames()
 # arp_communications()
 # tftp_communications()
@@ -232,29 +238,28 @@ print_icmp()
 # most_used_ip_addresses()
 
 userResponse = ""
-while userResponse == "q":
+while userResponse != "q":
     print("Actions list:")
     print("1 - Everything")
     print("2 - Most used IP address")
     print("3 - All TFTP communications")
     print("4 - All ARP communications")
     print("5 - All ICMP communications")
-    print("6 - Filter by protocol")
-    print("7 - Find communication by protocol")
+    print("6 - Filter by TCP protocol")
+    print("7 - Find communication by TCP protocol")
     print("q - Quit application")
     print("----------------------------")
     print("Type action > ", end="")
     userResponse = input()
 
-    # userResponse = "1"
     if userResponse == "1":
         print_frames(all_frames)
     elif userResponse == "2":
-        most_used_ip_addresses()
+        print_most_used_ip_addresses()
     elif userResponse == "3":
-        tftp_communications()
+        print_tftp()
     elif userResponse == "4":
-        arp_communications()
+        print_arp()
     elif userResponse == "5":
         print_icmp()
     elif userResponse == "6":

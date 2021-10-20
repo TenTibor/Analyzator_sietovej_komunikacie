@@ -1,6 +1,7 @@
 from scapy.all import *
 
 flags = {
+    "01": "FIN",
     "02": "SYN",
     "04": "RST",
     "12": "SYN, ACK",
@@ -8,8 +9,8 @@ flags = {
     "11": "FIN, ACK",
     "14": "RST, ACK",
     "18": "PSH, ACK",
-    "19": "wtf19",
-    "40": "Dont fragmet"
+    "19": "FIN, PSH, ACK",
+    "40": "Don't fragmet"
 }
 
 
@@ -175,29 +176,24 @@ class Frame:
                 icmp_data = self.load_icmp_data()
 
                 for row in icmp_data[:16]:
-                    # print(row[0], icmp_type_hex)
                     if row[0] == icmp_type_hex:
                         self.icmp_type = row[1].replace("\n", "")
 
                         # check code
                         if icmp_type_hex == "03":
                             for rowB in icmp_data[17:31]:
-                                # print(row[0], icmp_type_hex)
                                 if rowB[0] == icmp_type_hex:
                                     self.icmp_code = rowB[1].replace("\n", "")
                         elif icmp_type_hex == "05":
                             for rowB in icmp_data[32:36]:
-                                # print(row[0], icmp_type_hex)
                                 if rowB[0] == icmp_type_hex:
                                     self.icmp_code = rowB[1].replace("\n", "")
                         elif icmp_type_hex == "11":
                             for rowB in icmp_data[37:39]:
-                                # print(row[0], icmp_type_hex)
                                 if rowB[0] == icmp_type_hex:
                                     self.icmp_code = rowB[1].replace("\n", "")
                         elif icmp_type_hex == "12":
                             for rowB in icmp_data[40:]:
-                                # print(row[0], icmp_type_hex)
                                 if rowB[0] == icmp_type_hex:
                                     self.icmp_code = rowB[1].replace("\n", "")
 
