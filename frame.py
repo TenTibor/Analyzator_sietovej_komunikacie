@@ -7,7 +7,9 @@ flags = {
     "10": "ACK",
     "11": "FIN, ACK",
     "14": "RST, ACK",
-    "18": "PSH, ACK"
+    "18": "PSH, ACK",
+    "19": "19",
+    "40": "Dont fragmet"
 }
 
 
