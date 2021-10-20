@@ -6,9 +6,9 @@ from frame import Frame
 # file = "eth-1.pcap"  # http, https
 # file = "trace-16.pcap"  # http tracking
 # file = "trace-18.pcap"  # ssh tracking
-file = "trace-20.pcap"  # ssh tracking
+file = "trace-20.pcap"  # ssh tracking, http
 # file = "eth-2.pcap"  # ethernet
-# file = "trace-15.pcap"  # ARP
+# file = "trace-15.pcap"  # ARP, ICMP
 # file = "trace-26.pcap"  # ARP
 
 data = rdpcap('vzorky/' + file)
@@ -135,6 +135,16 @@ def print_frames(frames):
         frame.print_frame()
 
 
+def print_frames_limits(frames):
+    if len(frames) > 20:
+        print("[First 10 frames]")
+        print_frames(frames[:10])
+        print("[Last 10 frames]")
+        print_frames(frames[-11:-1])
+    else:
+        print_frames(frames)
+
+
 def print_by_protocol(protocol):
     for frame in all_frames:
         if frame.protocol_by_port and frame.protocol_by_port.lower() == protocol.lower():
@@ -172,17 +182,21 @@ def print_communication_by_protocol(protocol):
                                 comm[3] = True
                             break
 
+    # Find first opened
     for index, communication in enumerate(found_communications):
-        print(protocol.upper() + " Communication: " + str(index + 1) + "(" + str(len(communication[0])) + ") - "
-              + ("Closed" if communication[3] else "Opened"))
-        print(communication)
-        # if len(communication) > 20:
-        #     print("[First 10 frames]")
-        #     print_frames(communication[:10])
-        #     print("[Last 10 frames]")
-        #     print_frames(communication[-11:-1])
-        # else:
-        #     print_frames(communication)
+        if communication[3] is False:
+            print(protocol.upper() + " communication: (" + str(len(communication[0])) + " frames) - "
+                  + ("Closed" if communication[3] else "Opened"))
+            print_frames_limits(communication[0])
+            break
+
+    # Find first closed
+    for index, communication in enumerate(found_communications):
+        if communication[3] is True:
+            print(protocol.upper() + " communication: (" + str(len(communication[0])) + " frames) - "
+                  + ("Closed" if communication[3] else "Opened"))
+            print_frames_limits(communication[0])
+            break
 
 
 def print_icmp():
