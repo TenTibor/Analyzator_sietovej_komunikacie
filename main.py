@@ -6,7 +6,7 @@ from frame import Frame
 # file = "eth-1.pcap"  # http, https
 # file = "trace-16.pcap"  # http tracking
 # file = "trace-18.pcap"  # ssh tracking
-file = "trace-4.pcap"  # ssh tracking
+file = "trace-20.pcap"  # ssh tracking
 # file = "eth-2.pcap"  # ethernet
 # file = "trace-15.pcap"  # ARP
 # file = "trace-26.pcap"  # ARP
@@ -149,16 +149,26 @@ def print_communication_by_protocol(protocol):
                 # print(currIndex, frame, frame.flag)
                 # Start of communication
                 if frame.flag == "SYN":
-                    found_communications.append([[frame], frame.sourceIpAddress, frame.destinationIpAddress, False])
+                    found_communications.append(
+                        [[frame], frame.destinationIpAddress, frame.sourcePort, False, False, False, ""]
+                    )
                 else:
                     # find where communication belong
                     for comm in found_communications:
-                        if (comm[2] == frame.sourceIpAddress or comm[2] == frame.destinationIpAddress) \
+                        if (comm[1] == frame.sourceIpAddress or comm[1] == frame.destinationIpAddress)\
+                            and (comm[2] == frame.sourcePort or comm[2] == frame.destinationPort)\
                                 and comm[3] is False:
                             comm[0].append(frame)
 
+                            # Communication is ending soon
+                            if frame.flag == "FIN, ACK":
+                                comm[4 if frame.sourceIpAddress == comm[1] else 5] = True
+
+                                # Add also last one who sent this
+                                comm[6] = "L" if frame.sourceIpAddress == comm[1] else "R"
+
                             # Communication is ending
-                            if frame.flag == "RST, ACK" or frame.flag == "RST":
+                            if frame.flag == "RST, ACK" or frame.flag == "RST" or (comm[4] is True and comm[5] is True):
                                 comm[3] = True
                             break
 
@@ -168,7 +178,7 @@ def print_communication_by_protocol(protocol):
 
     for index, communication in enumerate(found_communications):
         print(protocol.upper() + " Communication: " + str(index + 1) + "(" + str(len(communication[0])) + ") - "
-              + ("Opened" if communication[3] else "Closed"))
+              + ("Closed" if communication[3] else "Opened"))
         print(communication)
         # if len(communication) > 20:
         #     print("[First 10 frames]")
