@@ -4,7 +4,9 @@ from frame import Frame
 
 # load files and create db
 # file = "eth-1.pcap"  # http, https
-file = "trace-16.pcap"  # http tracking
+# file = "trace-16.pcap"  # http tracking
+# file = "trace-18.pcap"  # ssh tracking
+file = "trace-17.pcap"  # ssh tracking
 # file = "eth-2.pcap"  # ethernet
 # file = "trace-15.pcap"  # ARP
 # file = "trace-26.pcap"  # ARP
@@ -140,33 +142,37 @@ def print_by_protocol(protocol):
 
 
 def print_communication_by_protocol(protocol):
-    found_communications = []
+    closed = False
+    frames_of_communication = []
     currIndex = None
     for frame in all_frames:
-        if frame.protocol_by_port and frame.protocol_by_port.lower() == protocol.lower():
+        if closed is not True and frame.protocol_by_port and frame.protocol_by_port.lower() == protocol.lower():
             if frame.flag is not None:
+                # print(currIndex, frame, frame.flag)
                 # Start of communication
                 if frame.flag == "SYN":
-                    currIndex = 0 if currIndex is None else currIndex + 1
-                    found_communications.append([frame])
+                    if currIndex is None:
+                        currIndex = 0
+                    frames_of_communication.append(frame)
 
                 # Communication continuing
                 elif frame.flag != "SYN":
-                    found_communications[currIndex].append(frame)
+                    frames_of_communication.append(frame)
 
                 # Communication is ending
                 if frame.flag == "RST, ACK" or frame.flag == "RST":
-                    currIndex += 1
+                    closed = True
 
-    for index, communication in enumerate(found_communications):
-        print(protocol.upper() + " communication: " + str(index + 1))
-        if len(communication) > 20:
-            print("[First 10 frames]")
-            print_frames(communication[:10])
-            print("[Last 10 frames]")
-            print_frames(communication[-11:-1])
-        else:
-            print_frames(communication)
+    print(protocol.upper() + " communication (" + str(len(frames_of_communication)) + " frames)")
+    print("Connection is " + ("closed" if closed else "open"))
+    print(frames_of_communication)
+    # if len(communication) > 20:
+    #     print("[First 10 frames]")
+    #     print_frames(communication[:10])
+    #     print("[Last 10 frames]")
+    #     print_frames(communication[-11:-1])
+    # else:
+    #     print_frames(communication)
 
 
 def print_icmp():
@@ -193,7 +199,7 @@ def most_used_ip_addresses():
 
 calc_all_frames()
 # INTERFACE
-# print_communication_by_protocol("ftp-data")
+print_communication_by_protocol("https")
 # print_icmp()
 # print_frames()
 # arp_communications()
@@ -202,7 +208,7 @@ calc_all_frames()
 # most_used_ip_addresses()
 
 userResponse = ""
-while userResponse != "q":
+while userResponse == "q":
     print("Actions list:")
     print("1 - Everything")
     print("2 - Most used IP address")
