@@ -1,5 +1,15 @@
 from scapy.all import *
 
+flags = {
+    "02": "SYN",
+    "04": "RST",
+    "12": "SYN, ACK",
+    "10": "ACK",
+    "11": "FIN, ACK",
+    "14": "RST, ACK",
+    "18": "PSH, ACK"
+}
+
 
 class Frame:
     db_protocols = None
@@ -7,7 +17,6 @@ class Frame:
     hexPacket = None
     lengthPacket = None
     mediumLength = None
-
     destinationMacAddress = ""
     sourceMacAddress = ""
 
@@ -105,7 +114,7 @@ class Frame:
 
             # print flag
             if self.flag:
-                print("  -" + self.flag)
+                print("   -" + self.flag)
 
             # print source and destination port
             if self.sourcePort:
@@ -150,9 +159,11 @@ class Frame:
 
                         # print protocol by destination port
                         for yProtocol in self.db_protocols[12:]:
-                            # print(xProtocol[1], sourcePort)
-                            if int(yProtocol[1]) == self.destinationPort:
+                            if int(yProtocol[1]) == self.destinationPort or int(yProtocol[1]) == self.sourcePort:
                                 self.protocol_by_port = yProtocol[2].replace("\n", "")
+
+                    if self.ipvProtocol == "TCP":
+                        self.flag = flags[self.hexPacket[94:96]]
 
             # calc ICMP protocol
             if self.ipvProtocol == "ICMP":
