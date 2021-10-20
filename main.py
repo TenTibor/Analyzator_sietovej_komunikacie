@@ -6,7 +6,7 @@ from frame import Frame
 # file = "eth-1.pcap"  # http, https
 # file = "trace-16.pcap"  # http tracking
 # file = "trace-18.pcap"  # ssh tracking
-file = "trace-17.pcap"  # ssh tracking
+file = "trace-4.pcap"  # ssh tracking
 # file = "eth-2.pcap"  # ethernet
 # file = "trace-15.pcap"  # ARP
 # file = "trace-26.pcap"  # ARP
@@ -142,37 +142,41 @@ def print_by_protocol(protocol):
 
 
 def print_communication_by_protocol(protocol):
-    closed = False
-    frames_of_communication = []
-    currIndex = None
+    found_communications = []
     for frame in all_frames:
-        if closed is not True and frame.protocol_by_port and frame.protocol_by_port.lower() == protocol.lower():
+        if frame.protocol_by_port and frame.protocol_by_port.lower() == protocol.lower():
             if frame.flag is not None:
                 # print(currIndex, frame, frame.flag)
                 # Start of communication
                 if frame.flag == "SYN":
-                    if currIndex is None:
-                        currIndex = 0
-                    frames_of_communication.append(frame)
+                    found_communications.append([[frame], frame.sourceIpAddress, frame.destinationIpAddress, False])
+                else:
+                    # find where communication belong
+                    for comm in found_communications:
+                        if (comm[2] == frame.sourceIpAddress or comm[2] == frame.destinationIpAddress) \
+                                and comm[3] is False:
+                            comm[0].append(frame)
+
+                            # Communication is ending
+                            if frame.flag == "RST, ACK" or frame.flag == "RST":
+                                comm[3] = True
+                            break
 
                 # Communication continuing
-                elif frame.flag != "SYN":
-                    frames_of_communication.append(frame)
+                # elif frame.flag != "SYN":
+                #     found_communications[currIndex][0].append(frame)
 
-                # Communication is ending
-                if frame.flag == "RST, ACK" or frame.flag == "RST":
-                    closed = True
-
-    print(protocol.upper() + " communication (" + str(len(frames_of_communication)) + " frames)")
-    print("Connection is " + ("closed" if closed else "open"))
-    print(frames_of_communication)
-    # if len(communication) > 20:
-    #     print("[First 10 frames]")
-    #     print_frames(communication[:10])
-    #     print("[Last 10 frames]")
-    #     print_frames(communication[-11:-1])
-    # else:
-    #     print_frames(communication)
+    for index, communication in enumerate(found_communications):
+        print(protocol.upper() + " Communication: " + str(index + 1) + "(" + str(len(communication[0])) + ") - "
+              + ("Opened" if communication[3] else "Closed"))
+        print(communication)
+        # if len(communication) > 20:
+        #     print("[First 10 frames]")
+        #     print_frames(communication[:10])
+        #     print("[Last 10 frames]")
+        #     print_frames(communication[-11:-1])
+        # else:
+        #     print_frames(communication)
 
 
 def print_icmp():
@@ -199,7 +203,7 @@ def most_used_ip_addresses():
 
 calc_all_frames()
 # INTERFACE
-print_communication_by_protocol("https")
+print_communication_by_protocol("http")
 # print_icmp()
 # print_frames()
 # arp_communications()
