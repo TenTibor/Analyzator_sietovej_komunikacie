@@ -23,6 +23,8 @@ class Frame:
     sourcePort = None
     destinationPort = None
 
+    flag = None
+
     # ARP
     op_code = None
     sender_ip_address = None
@@ -100,6 +102,10 @@ class Frame:
             # print ports
             if self.protocol_by_port:
                 print("  -" + self.protocol_by_port)
+
+            # print flag
+            if self.flag:
+                print("  -" + self.flag)
 
             # print source and destination port
             if self.sourcePort:
