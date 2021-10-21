@@ -8,11 +8,8 @@ from frame import Frame
 # file = "trace-18.pcap"  # ssh tracking
 # file = "trace-20.pcap"  # ssh tracking, http
 # file = "eth-2.pcap"  # ethernet
-file = "trace-15.pcap"  # ARP, ICMP, tftp
 # file = "trace-26.pcap"  # ARP
 
-data = rdpcap('vzorky/' + file)
-print(f"[File '{file}' was loaded]\n")
 file = open('db.txt', "r")
 protocols = []
 for iProtocol in file:
@@ -28,6 +25,11 @@ allEthernetNodes = []
 
 output = open("frames_output.txt", "w")
 output.truncate()
+
+
+def load_sample(filename):
+    print(f"[File '{filename}' was loaded]\n")
+    return rdpcap('vzorky/' + filename)
 
 
 def print_tftp():
@@ -231,16 +233,11 @@ def print_most_used_ip_addresses():
     print("=============================================")
 
 
+# START PROGRAM
+data = load_sample("trace-15.pcap")
 calc_all_frames()
-# INTERFACE
-# print_communication_by_protocol("http")
-# print_icmp()
-# print_frames()
-# arp_communications()
-# tftp_communications()
-# print_html()
-# most_used_ip_addresses()
 
+# INTERFACE
 userResponse = ""
 while userResponse != "q":
     print("Actions list:")
@@ -251,6 +248,7 @@ while userResponse != "q":
     print("5 - All ICMP communications")
     print("6 - Filter by TCP protocol")
     print("7 - Find communication by TCP protocol")
+    print("8 - Change sample")
     print("q - Quit application")
     print("----------------------------")
     print("Type action > ", end="")
@@ -274,5 +272,9 @@ while userResponse != "q":
         print("Type protocol > ", end="")
         protocol = input()
         print_communication_by_protocol(protocol)
+    elif userResponse == "8":
+        print("Type name of sample file > ", end="")
+        file = input()
+        data = load_sample(file + ".pcap")
     output.write("====================END OF COMMAND====================\n")
 output.close()
