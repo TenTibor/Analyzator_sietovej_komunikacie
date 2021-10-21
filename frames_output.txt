@@ -1,0 +1,138 @@
+==== List of all IGMP protocols ====
+Frame: 98
+PCAP API packet length: 54 B
+Real packet length: 64 B
+Source MAC address: 00:10:18:33:cf:44
+Destination MAC address: 01:00:5e:00:00:16
+Ethernet II
+ -IPv4
+  -Source IP address: 10.20.30.1
+  -Destination IP address: 224.0.0.22
+ -IGMP
+
+01 00 5e 00 00 16 00 10  18 33 cf 44 08 00 46 00  
+00 28 04 64 00 00 01 02  00 00 0a 14 1e 01 e0 00  
+00 16 94 04 00 00 22 00  f9 01 00 00 00 01 04 00  
+00 00 e0 00 00 fc 
+------------------------------------------------
+
+Frame: 99
+PCAP API packet length: 54 B
+Real packet length: 64 B
+Source MAC address: 00:10:18:33:cf:44
+Destination MAC address: 01:00:5e:00:00:16
+Ethernet II
+ -IPv4
+  -Source IP address: 10.20.30.1
+  -Destination IP address: 224.0.0.22
+ -IGMP
+
+01 00 5e 00 00 16 00 10  18 33 cf 44 08 00 46 00  
+00 28 04 65 00 00 01 02  00 00 0a 14 1e 01 e0 00  
+00 16 94 04 00 00 22 00  ea 03 00 00 00 01 04 00  
+00 00 ef ff ff fa 
+------------------------------------------------
+
+Frame: 104
+PCAP API packet length: 62 B
+Real packet length: 66 B
+Source MAC address: 00:10:18:33:cf:44
+Destination MAC address: 01:00:5e:00:00:16
+Ethernet II
+ -IPv4
+  -Source IP address: 10.20.30.1
+  -Destination IP address: 224.0.0.22
+ -IGMP
+
+01 00 5e 00 00 16 00 10  18 33 cf 44 08 00 46 00  
+00 30 04 69 00 00 01 02  00 00 0a 14 1e 01 e0 00  
+00 16 94 04 00 00 22 00  05 06 00 00 00 02 04 00  
+00 00 e0 00 00 fc 04 00  00 00 ef ff ff fa 
+------------------------------------------------
+
+Frame: 111
+PCAP API packet length: 54 B
+Real packet length: 64 B
+Source MAC address: 00:10:18:33:cf:44
+Destination MAC address: 01:00:5e:00:00:16
+Ethernet II
+ -IPv4
+  -Source IP address: 10.20.30.1
+  -Destination IP address: 224.0.0.22
+ -IGMP
+
+01 00 5e 00 00 16 00 10  18 33 cf 44 08 00 46 00  
+00 28 04 6c 00 00 01 02  00 00 0a 14 1e 01 e0 00  
+00 16 94 04 00 00 22 00  fa 01 00 00 00 01 03 00  
+00 00 e0 00 00 fc 
+------------------------------------------------
+
+Frame: 113
+PCAP API packet length: 54 B
+Real packet length: 64 B
+Source MAC address: 00:10:18:33:cf:44
+Destination MAC address: 01:00:5e:00:00:16
+Ethernet II
+ -IPv4
+  -Source IP address: 10.20.30.1
+  -Destination IP address: 224.0.0.22
+ -IGMP
+
+01 00 5e 00 00 16 00 10  18 33 cf 44 08 00 46 00  
+00 28 04 6e 00 00 01 02  00 00 0a 14 1e 01 e0 00  
+00 16 94 04 00 00 22 00  f9 01 00 00 00 01 04 00  
+00 00 e0 00 00 fc 
+------------------------------------------------
+
+Frame: 118
+PCAP API packet length: 54 B
+Real packet length: 64 B
+Source MAC address: 00:10:18:33:cf:44
+Destination MAC address: 01:00:5e:00:00:16
+Ethernet II
+ -IPv4
+  -Source IP address: 10.20.30.1
+  -Destination IP address: 224.0.0.22
+ -IGMP
+
+01 00 5e 00 00 16 00 10  18 33 cf 44 08 00 46 00  
+00 28 04 73 00 00 01 02  00 00 0a 14 1e 01 e0 00  
+00 16 94 04 00 00 22 00  f9 01 00 00 00 01 04 00  
+00 00 e0 00 00 fc 
+------------------------------------------------
+
+Frame: 136
+PCAP API packet length: 54 B
+Real packet length: 64 B
+Source MAC address: 00:10:18:33:cf:44
+Destination MAC address: 01:00:5e:00:00:16
+Ethernet II
+ -IPv4
+  -Source IP address: 10.20.30.1
+  -Destination IP address: 224.0.0.22
+ -IGMP
+
+01 00 5e 00 00 16 00 10  18 33 cf 44 08 00 46 00  
+00 28 04 83 00 00 01 02  00 00 0a 14 1e 01 e0 00  
+00 16 94 04 00 00 22 00  f9 02 00 00 00 01 04 00  
+00 00 e0 00 00 fb 
+------------------------------------------------
+
+Frame: 143
+PCAP API packet length: 54 B
+Real packet length: 64 B
+Source MAC address: 00:10:18:33:cf:44
+Destination MAC address: 01:00:5e:00:00:16
+Ethernet II
+ -IPv4
+  -Source IP address: 10.20.30.1
+  -Destination IP address: 224.0.0.22
+ -IGMP
+
+01 00 5e 00 00 16 00 10  18 33 cf 44 08 00 46 00  
+00 28 04 8a 00 00 01 02  00 00 0a 14 1e 01 e0 00  
+00 16 94 04 00 00 22 00  f9 02 00 00 00 01 04 00  
+00 00 e0 00 00 fb 
+------------------------------------------------
+
+===== 8 frames was found =====

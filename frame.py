@@ -216,7 +216,7 @@ class Frame:
                         self.destinationPort = int(self.hexPacket[self.endOfHead + 20:self.endOfHead + 24], 16)
 
                         # print protocol by destination port
-                        for yProtocol in self.db_protocols[12:]:
+                        for yProtocol in self.db_protocols[13:]:
                             if int(yProtocol[1]) == self.destinationPort or int(yProtocol[1]) == self.sourcePort:
                                 self.protocol_by_port = yProtocol[2].replace("\n", "")
 

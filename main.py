@@ -3,7 +3,7 @@ from scapy.all import *
 from frame import Frame
 
 # load files and create db
-file = "eth-2.pcap"  # http, https
+file = "trace-26.pcap"  # http, https
 
 data = rdpcap('vzorky/' + file)
 print(f"[File '{file}' was loaded]\n")
@@ -217,6 +217,23 @@ def print_icmp():
         frame.print_frame()
 
 
+def print_igmp():
+    print("==== List of all IGMP protocols ====")
+    outputFile = open("frames_output.txt", "w")
+    outputFile.write("==== List of all IGMP protocols ====\n")
+    count = 0
+    for frame in all_frames:
+        if frame.transportProtocol == "IGMP":
+            count += 1
+            frame.print_frame()
+            outputFile.write(frame.export_to_string() + "\n")
+    print(f"===== {count} frames was found =====")
+    print(f"------------------------------------")
+
+    outputFile.write(f"===== {count} frames was found =====\n")
+    outputFile.close()
+
+
 def print_most_used_ip_addresses():
     print("=== List of all used IP address ===")
 
@@ -243,6 +260,7 @@ while userResponse != "q":
     print("5 - Show all ICMP frames")
     print("6 - Filter by TCP protocol")
     print("7 - Find communication by TCP protocol")
+    print("8 - (Doimplementacia) Show all IGMP frames")
     print("q - Quit application")
     print("----------------------------")
     print("Type action > ", end="")
@@ -268,5 +286,7 @@ while userResponse != "q":
         protocol = input()
         print("=============================================")
         print_communication_by_protocol(protocol)
+    elif userResponse == "8":
+        print_igmp()
     output.write("====================END OF COMMAND====================\n")
 output.close()
