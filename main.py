@@ -3,13 +3,7 @@ from scapy.all import *
 from frame import Frame
 
 # load files and create db
-# file = "eth-1.pcap"  # http, https
-# file = "trace-16.pcap"  # http tracking
-# file = "trace-18.pcap"  # ssh tracking
-# file = "trace-20.pcap"  # ssh tracking, http
-# file = "eth-2.pcap"  # ethernet
-# file = "eth-2.pcap"  # ARP, ICMP, tftp
-file = "trace-15.pcap"  # ARP
+file = "eth-2.pcap"  # http, https
 
 data = rdpcap('vzorky/' + file)
 print(f"[File '{file}' was loaded]\n")
@@ -164,20 +158,22 @@ def print_communication_by_protocol(protocol):
     for frame in all_frames:
         if frame.protocol_by_port and frame.protocol_by_port.lower() == protocol.lower():
             if frame.flag is not None:
-                # print(currIndex, frame, frame.flag)
                 # Start of communication
                 if frame.flag == "SYN":
                     found_communications.append(
                         [[frame], frame.destinationIpAddress, frame.sourcePort, False, False, False, None]
-                        # closed, FIN-S, FIND-D, take last one
+                        # closed, FIN-S, FIND-D, take last one by index
                     )
                 else:
+                    found = False
                     # find where communication belong
                     for comm in found_communications:
                         if comm[6] == frame.index:
                             comm[0].append(frame)
+                            found = True
                         elif (comm[2] == frame.sourcePort or comm[2] == frame.destinationPort) and comm[3] is False:
                             comm[0].append(frame)
+                            found = True
 
                             # Communication is ending soon
                             if frame.flag == "FIN, ACK":
@@ -189,6 +185,14 @@ def print_communication_by_protocol(protocol):
                             if frame.flag == "RST, ACK" or frame.flag == "RST" or (comm[4] is True and comm[5] is True):
                                 comm[3] = True
                             break
+                    # if communication wasnt started correctly
+                    if found is not True:
+                        found_communications.append(
+                            [[frame], "",
+                             frame.sourcePort if frame.sourcePort != protocol.lower() else frame.destinationPort,
+                             True if frame.flag == "RST, ACK" or frame.flag == "RST" else False, False, False, None]
+                            # closed, FIN-S, FIND-D, take last one by index
+                        )
 
     # Find first opened
     for index, communication in enumerate(found_communications):
