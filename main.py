@@ -4,12 +4,12 @@ from frame import Frame
 
 # load files and create db
 # file = "eth-1.pcap"  # http, https
-file = "trace-16.pcap"  # http tracking
+# file = "trace-16.pcap"  # http tracking
 # file = "trace-18.pcap"  # ssh tracking
 # file = "trace-20.pcap"  # ssh tracking, http
 # file = "eth-2.pcap"  # ethernet
 # file = "eth-2.pcap"  # ARP, ICMP, tftp
-# file = "trace-26.pcap"  # ARP
+file = "trace-15.pcap"  # ARP
 
 data = rdpcap('vzorky/' + file)
 print(f"[File '{file}' was loaded]\n")
@@ -19,8 +19,6 @@ for iProtocol in file:
     protocols.append(iProtocol.split(" "))
 
 all_frames = []
-# 1 - packet
-# 2 - source port
 communications_tftp = []
 communications_arp = []
 communications_icmp = []
@@ -37,7 +35,7 @@ def print_tftp():
         print(f"Communication {str(index + 1)} - {len(communication[0])} frames")
         print(f"Source IP: {communication[0][0].sourceIpAddress}:{communication[0][0].sourcePort}    "
               f"Destination IP: {communication[0][0].destinationIpAddress}:{communication[0][0].destinationPort}")
-        print("Packets:")
+        print("Frames:")
         print_frames_limits(communication[0])
         print("===============================================================================")
         print("===============================================================================")
@@ -64,9 +62,9 @@ def calc_all_frames():
     currDestinationPort = None
     currIndex = None
 
-    for index, packet in enumerate(data):
+    for index, frame_data in enumerate(data):
         # get frame
-        this_frame = Frame(packet, index + 1, protocols)
+        this_frame = Frame(frame_data, index + 1, protocols)
         all_frames.append(this_frame)
 
         # CALC MOST USED
@@ -201,7 +199,6 @@ def print_communication_by_protocol(protocol):
             break
 
     # Find first closed
-    print(communication)
     for index, communication in enumerate(found_communications):
         if communication[3] is True:
             print(protocol.upper() + " communication: (" + str(len(communication[0])) + " frames) - "
@@ -217,14 +214,11 @@ def print_icmp():
 
 
 def print_most_used_ip_addresses():
-    # Print all ethernet source address
     print("=== List of all used IP address ===")
-    for node in allEthernetNodes:
-        print(node[0])
 
-    # find most used and print it
     mostUsed = [None, 0]
     for node in allEthernetNodes:
+        print(node[0])
         if node[1] > mostUsed[1]:
             mostUsed = node
 
@@ -249,7 +243,7 @@ while userResponse != "q":
     print("2 - Show most used IP address")
     print("3 - Show all TFTP communications")
     print("4 - Show all ARP communications")
-    print("5 - Show all ICMP communications")
+    print("5 - Show all ICMP frames")
     print("6 - Filter by TCP protocol")
     print("7 - Find communication by TCP protocol")
     print("q - Quit application")
@@ -270,10 +264,12 @@ while userResponse != "q":
     elif userResponse == "6":
         print("Type protocol > ", end="")
         protocol = input()
+        print("=============================================")
         print_by_protocol(protocol)
     elif userResponse == "7":
         print("Type protocol > ", end="")
         protocol = input()
+        print("=============================================")
         print_communication_by_protocol(protocol)
     output.write("====================END OF COMMAND====================\n")
 output.close()
