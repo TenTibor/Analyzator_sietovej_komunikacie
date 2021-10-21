@@ -94,7 +94,7 @@ class Frame:
 
     def print_frame(self):
         print(f"Frame: {self.index}")
-        print(f"PCAP API packet length: {self.lengthPacket} B")
+        print(f"API packet length: {self.lengthPacket} B")
         print(f"Real packet length: {self.mediumLength} B")
         print(f"Source MAC address: {self.sourceMacAddress}")
         print(f"Destination MAC address: {self.destinationMacAddress}")

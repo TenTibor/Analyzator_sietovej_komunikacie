@@ -232,13 +232,6 @@ def print_most_used_ip_addresses():
 
 calc_all_frames()
 # INTERFACE
-# print_communication_by_protocol("http")
-# print_icmp()
-# print_frames()
-# arp_communications()
-# tftp_communications()
-# print_html()
-# most_used_ip_addresses()
 
 userResponse = ""
 while userResponse != "q":
