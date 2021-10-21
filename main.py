@@ -8,8 +8,8 @@ from frame import Frame
 # file = "trace-18.pcap"  # ssh tracking
 # file = "trace-20.pcap"  # ssh tracking, http
 # file = "eth-2.pcap"  # ethernet
-# file = "trace-15.pcap"  # ARP, ICMP, tftp
-file = "trace-26.pcap"  # ARP
+file = "trace-15.pcap"  # ARP, ICMP, tftp
+# file = "trace-26.pcap"  # ARP
 
 data = rdpcap('vzorky/' + file)
 print(f"[File '{file}' was loaded]\n")
@@ -25,6 +25,9 @@ communications_tftp = []
 communications_arp = []
 communications_icmp = []
 allEthernetNodes = []
+
+output = open("frames_output.txt", "w")
+output.truncate()
 
 
 def print_tftp():
@@ -139,6 +142,7 @@ def calc_all_frames():
 def print_frames(frames):
     for frame in frames:
         frame.print_frame()
+        output.write(frame.export_to_string() + "\n")
 
 
 def print_frames_limits(frames):
@@ -270,3 +274,5 @@ while userResponse != "q":
         print("Type protocol > ", end="")
         protocol = input()
         print_communication_by_protocol(protocol)
+    output.write("====================END OF COMMAND====================\n")
+output.close()

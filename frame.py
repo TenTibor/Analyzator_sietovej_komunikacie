@@ -130,8 +130,61 @@ class Frame:
             print("  -Opcode: " + ("Request" if self.op_code == 1 else "Reply"))
             print("  -Sender IP address: " + self.sender_ip_address)
             print("  -Target IP address: " + self.target_ip_address)
-        # self.print_hex()
+        self.print_hex()
         print("\n------------------------------------------------")
+
+    def export_to_string(self):
+        output = ""
+        output += f"Frame: {self.index}\n"
+        output += f"PCAP API packet length: {self.lengthPacket} B\n"
+        output += f"Real packet length: {self.mediumLength} B\n"
+        output += f"Source MAC address: {self.sourceMacAddress}\n"
+        output += f"Destination MAC address: {self.destinationMacAddress}\n"
+        output += self.frameType + "\n"
+        output += f" -{self.packetType}\n"
+
+        if self.transportProtocol:
+            output += f"  -Source IP address: {self.sourceIpAddress}\n"
+            output += f"  -Destination IP address: {self.destinationIpAddress}\n"
+            output += " -" + self.transportProtocol + "\n"
+
+            # print ICMP
+            if self.icmp_type is not None:
+                output += ("  -" + self.icmp_type + "\n")
+                if self.icmp_code is not None:
+                    output += ("   -" + self.icmp_code + "\n")
+
+            # print ports
+            if self.protocol_by_port:
+                output += ("  -" + self.protocol_by_port + "\n")
+
+            # print flag
+            if self.flag:
+                output += ("   -" + self.flag + "\n")
+
+            # print source and destination port
+            if self.sourcePort:
+                output += "   -Source port: " + str(self.sourcePort) + "\n"
+                output += "   -Destination port: " + str(self.destinationPort) + "\n"
+
+        if self.packetType == "ARP":
+            output += "  -Opcode: " + ("Request" if self.op_code == 1 else "Reply") + "\n"
+            output += "  -Sender IP address: " + self.sender_ip_address + "\n"
+            output += "  -Target IP address: " + self.target_ip_address + "\n"
+
+        # generate hex
+        output += "\n"
+        for index, char in enumerate(self.hexPacket):
+            output += char
+            if index % 2:
+                output += " "
+            if index % 16 == 15:
+                output += " "
+            if index % 32 == 31:
+                output += "\n"
+
+        output += "\n------------------------------------------------" + "\n"
+        return output
 
     def calc_ethernet(self):
         self.frameType = "Ethernet II"
